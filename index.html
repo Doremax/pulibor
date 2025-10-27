@@ -15,6 +15,13 @@
             --sidebar-width: 240px;
             --bottom-bar-height: 65px;
             --transition-speed: 0.3s;
+            /* НОВЫЕ ЦВЕТА МЕНЮ */
+            --menu-bg: #ffffff;
+            --menu-text: #333333;
+            --menu-icon: #555555;
+            --menu-hover-bg: #f4f4f4;
+            --menu-active-bg: #667eea;
+            --menu-active-text: #ffffff;
         }
 
         body {
@@ -25,7 +32,7 @@
         }
         
         /* * ============================================================================
-         * СТИЛИ: СКЛАДНОЙ САЙДБАР (План "Г")
+         * СТИЛИ: СКЛАДНОЙ САЙДБАР (План "Д" - по картинке)
          * ============================================================================
         */
 
@@ -38,64 +45,89 @@
             width: var(--sidebar-width);
             display: flex;
             flex-direction: column; 
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            /* ИЗМЕНЕНИЕ: фон на белый */
+            background: var(--menu-bg);
             border-bottom: none;
             overflow-y: auto; 
             z-index: 1100;
             transform: translateX(calc(var(--sidebar-width) * -1));
             transition: transform var(--transition-speed) ease;
+            padding-top: 0; /* Убираем старый отступ */
+            border-right: 1px solid #e0e0e0;
+        }
+
+        /* 2. НОВЫЙ Заголовок "Меню" в сайдбаре */
+        .sidebar-header {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--menu-text);
+            border-bottom: 1px solid #f0f0f0;
         }
         
-        /* 2. Стили кнопок в сайдбаре */
+        /* 3. Стили кнопок в сайдбаре (полностью переписаны) */
         .nav-tab {
-            flex: auto;
+            /* Использование Flex для выравнивания иконки и текста */
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Расстояние между иконкой и текстом */
+            
             text-align: left;
             padding: 16px 20px;
             font-size: 15px;
-            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            color: var(--menu-text);
             border: none;
-            border-left: 4px solid transparent; 
             background: transparent;
             min-width: 0;
             cursor: pointer;
+            border-left: 4px solid transparent; /* Убираем старый индикатор */
+            transition: all 0.2s ease;
+        }
+        .nav-tab svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--menu-icon);
+            flex-shrink: 0; /* Запрещаем иконке сжиматься */
+            transition: fill 0.2s ease;
         }
         .nav-tab:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: var(--menu-hover-bg);
+            color: #111;
         }
         .nav-tab.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: var(--menu-active-bg);
+            color: var(--menu-active-text);
             font-weight: 600;
             border-bottom-color: transparent;
-            border-left-color: white;
+            border-left-color: transparent;
+        }
+        .nav-tab.active svg {
+            fill: var(--menu-active-text);
         }
 
-        /* 3. Контейнер (Основной контент) */
+        /* 4. Контейнер (Основной контент) */
         .container {
             margin: 0;
             max-width: none;
             border-radius: 0;
             box-shadow: none;
-            height: 100vh;
+            height: var(--tg-viewport-height, 100vh); /* Используем TWA переменную */
             overflow-y: auto;
-            /* Отступ для нижней панели */
             padding-bottom: calc(var(--bottom-bar-height) + 20px);
             background: white;
-            
-            /* Анимация сдвига (только на десктопе) */
             width: 100%;
             margin-left: 0;
             transition: margin-left var(--transition-speed) ease;
         }
         
-        /* 4. Нижняя панель действий (УЛУЧШЕНА) */
+        /* 5. Нижняя панель действий (без изменений) */
         .bottom-action-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: auto; /* Высота авто, определяется отступами */
+            height: auto;
             background: #ffffff;
             border-top: 1px solid #e0e0e0;
             display: flex;
@@ -104,40 +136,15 @@
             z-index: 900;
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
             transition: left var(--transition-speed) ease, width var(--transition-speed) ease;
-            
-            /* Улучшения читабельности */
             padding: 8px 10px; 
-            /* Отступ для "челки" iPhone */
             padding-bottom: calc(8px + env(safe-area-inset-bottom)); 
         }
-        .bottom-action-btn { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            padding: 4px 5px; /* Уменьшен верт. отступ */
-            border-radius: 8px; 
-            transition: background 0.3s; 
-            color: #555; 
-            height: 100%; 
-        }
+        .bottom-action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; padding: 4px 5px; border-radius: 8px; transition: background 0.3s; color: #555; height: 100%; }
         .bottom-action-btn:hover { background: #f4f4f4; }
-        .bottom-action-icon { 
-            font-size: 22px; /* Чуть меньше */
-            margin-bottom: 5px; /* Чуть больше */
-        }
-        .bottom-action-btn span { 
-            font-size: 11px; /* Чуть меньше */
-        }
+        .bottom-action-icon { font-size: 22px; margin-bottom: 5px; }
+        .bottom-action-btn span { font-size: 11px; }
         
-        /* 5. Кнопка "Гамбургер" (УДАЛЕНА) */
-        /* .sidebar-toggle { ... } - Удалено */
-
-        /* 6. Оверлей (для мобильных) */
+        /* 6. Оверлей (без изменений) */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -151,35 +158,17 @@
             transition: opacity var(--transition-speed) ease;
         }
 
-        /* 7. Логика открытия (Управляется JS) */
-        
-        body.sidebar-open .nav-tabs {
-            transform: translateX(0);
-        }
-
-        /* Показываем оверлей на мобильных */
+        /* 7. Логика открытия (без изменений) */
+        body.sidebar-open .nav-tabs { transform: translateX(0); }
         @media (max-width: 768px) {
-            body.sidebar-open .sidebar-overlay {
-                display: block;
-                opacity: 1;
-            }
+            body.sidebar-open .sidebar-overlay { display: block; opacity: 1; }
         }
-        
-        /* "Толкаем" контент на десктопе */
         @media (min-width: 769px) {
-            body.sidebar-open .container {
-                margin-left: var(--sidebar-width);
-                width: calc(100% - var(--sidebar-width));
-            }
-            body.sidebar-open .bottom-action-bar {
-                left: var(--sidebar-width);
-                width: calc(100% - var(--sidebar-width));
-            }
+            body.sidebar-open .container { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
+            body.sidebar-open .bottom-action-bar { left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
         }
 
-        /* 8. НОВЫЕ СТИЛИ (для перенесенных элементов) */
-        
-        /* Блок приветствия на главной */
+        /* 8. Блок приветствия на главной (без изменений) */
         .welcome-header {
             margin-bottom: 20px;
             padding: 15px;
@@ -189,42 +178,26 @@
             font-weight: 500;
             color: #333;
         }
-        body.dark-theme .welcome-header {
-            background: #1a1a2e;
-            color: #e0e0e0;
-        }
         
-        /* Кнопка темы в сайдбаре */
+        /* 9. Кнопка темы в сайдбаре (обновлен стиль) */
         .theme-toggle-sidebar {
-            margin-top: auto; /* Прижимает к низу */
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: auto;
+            border-top: 1px solid #f0f0f0;
         }
-        body.dark-theme .theme-toggle-sidebar {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
 
         /* * ============================================================================
-         * ОРИГИНАЛЬНЫЕ СТИЛИ (без изменений, кроме хедера)
+         * ОРИГИНАЛЬНЫЕ СТИЛИ (без изменений)
          * ============================================================================
         */
-        
-        /* HEADER (УДАЛЕН) */
-        /* .header { ... } - Удалено */
 
-        /* CONTENT */
         .content { padding: 30px; display: none; }
         .content.active { display: block; }
-
-        /* CARDS */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
         .card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 10px; font-weight: 500; }
         .card .value { font-size: 32px; font-weight: 700; }
         .card.positive { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
         .card.negative { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
-
-        /* FORMS */
         .form-container { background: #f8f9fa; padding: 30px; border-radius: 12px; margin-bottom: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; font-size: 14px; }
@@ -232,8 +205,6 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .form-row .form-group { margin-bottom: 0; }
-
-        /* BUTTONS */
         .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; display: inline-block; }
         .btn-primary { background: #667eea; color: white; }
         .btn-primary:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
@@ -245,16 +216,12 @@
         .btn-secondary:hover { background: #dee2e6; }
         .btn-small { padding: 8px 16px; font-size: 12px; }
         .btn-block { width: 100%; display: block; }
-
-        /* FILTERS */
         .filters { background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .filter-group { display: flex; flex-direction: column; }
         .filter-group label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; text-transform: uppercase; }
         .filter-group input, .filter-group select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
         .filter-group input:focus, .filter-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
         .filter-buttons { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-
-        /* TABLE */
         .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e9ecef; }
         table { width: 100%; border-collapse: collapse; background: white; }
         thead { background: #f8f9fa; border-bottom: 2px solid #e9ecef; }
@@ -265,13 +232,9 @@
         .status-approved { background: #d4edda; color: #155724; }
         .status-pending { background: #fff3cd; color: #856404; }
         .status-rejected { background: #f8d7da; color: #721c24; }
-
-        /* CHARTS */
         .chart-container { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e9ecef; margin-bottom: 20px; }
         .chart-container h3 { margin-bottom: 20px; color: #333; font-size: 16px; }
         .chart { width: 100%; height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; }
-
-        /* BALANCE LIST */
         .balance-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .balance-item { background: white; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .balance-item-info h4 { font-size: 16px; color: #333; margin-bottom: 5px; }
@@ -279,8 +242,6 @@
         .balance-item-value { font-size: 24px; font-weight: 700; text-align: right; }
         .balance-item-value.positive { color: #11998e; }
         .balance-item-value.negative { color: #eb3349; }
-
-        /* MODAL */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; }
         .modal.active { display: flex; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); animation: slideIn 0.3s; }
@@ -290,26 +251,18 @@
         .modal-close:hover { color: #333; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* ALERTS */
         .alert { padding: 15px; margin-bottom: 20px; border-radius: 6px; display: none; animation: slideIn 0.3s; }
         .alert.active { display: block; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-
-        /* LOADING */
         .loading { text-align: center; padding: 40px; color: #999; }
         .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* EMPTY STATE */
         .empty-state { text-align: center; padding: 60px 20px; color: #999; }
         .empty-state-icon { font-size: 64px; margin-bottom: 20px; }
         .empty-state-text { font-size: 16px; margin-bottom: 10px; }
-
-        /* ACTION BUTTONS */
         .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
         .action-card { flex: 1; min-width: 150px; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
         .action-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
@@ -321,18 +274,48 @@
         .action-card.info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
 
         /* * ============================================================================
-         * DARK THEME
+         * DARK THEME (обновлено для нового меню)
          * ============================================================================
         */
         body.dark-theme { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
         body.dark-theme .container { background: #0f3460; color: #e0e0e0; }
-        body.dark-theme .nav-tabs { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); border-bottom-color: transparent; }
-        body.dark-theme .nav-tab { background: transparent; color: #999; }
-        body.dark-theme .nav-tab:hover { background: #16213e; color: #ccc; }
-        body.dark-theme .nav-tab.active { background: #0f3460; color: #667eea; border-left-color: #667eea; border-bottom-color: transparent; }
+        
+        /* 1. Dark Theme для .nav-tabs (сайдбара) */
+        body.dark-theme .nav-tabs { 
+            background: #1a1a2e; 
+            border-right-color: #16213e;
+        }
+        body.dark-theme .sidebar-header {
+            color: #ffffff;
+            border-bottom-color: #16213e;
+        }
+        body.dark-theme .nav-tab { 
+            background: transparent; 
+            color: #999; 
+        }
+        body.dark-theme .nav-tab svg {
+            fill: #999;
+        }
+        body.dark-theme .nav-tab:hover { 
+            background: #16213e; 
+            color: #ccc; 
+        }
+        body.dark-theme .nav-tab.active { 
+            background: #0f3460; 
+            color: #667eea; 
+        }
+        body.dark-theme .nav-tab.active svg {
+            fill: #667eea;
+        }
+        body.dark-theme .theme-toggle-sidebar {
+             border-top-color: #16213e;
+        }
+
+        /* 2. Dark Theme для остального */
         body.dark-theme .bottom-action-bar { background: #0f3460; border-top-color: #16213e; }
         body.dark-theme .bottom-action-btn { color: #ccc; }
         body.dark-theme .bottom-action-btn:hover { background: #16213e; }
+        body.dark-theme .welcome-header { background: #1a1a2e; color: #e0e0e0; }
         body.dark-theme .form-container,
         body.dark-theme .filters { background: #1a1a2e; }
         body.dark-theme .form-group input, body.dark-theme .form-group select, body.dark-theme .form-group textarea,
@@ -362,10 +345,8 @@
                 display: block;
                 opacity: 1;
             }
-
-            /* Адаптация контента */
             .content {
-                padding: 15px; /* Уменьшаем отступы на мобильных */
+                padding: 15px;
             }
             .cards-grid {
                 grid-template-columns: 1fr;
@@ -387,15 +368,38 @@
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Главная</button>
-        <button class="nav-tab" onclick="switchTab('operations')">💼 Операции</button>
-        <button class="nav-tab" onclick="switchTab('journal')">📋 Журнал</button>
-        <button class="nav-tab" onclick="switchTab('balances')">💵 Балансы</button>
-        <button class="nav-tab" onclick="switchTab('analytics')">📈 Аналитика</button>
-        <button class="nav-tab" onclick="switchTab('approvals')">✅ Подтверждения</button>
+        <div class="sidebar-header">Меню</div>
+
+        <button class="nav-tab active" onclick="switchTab('dashboard')">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+            <span>Главная</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('operations')">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"></path></svg>
+            <span>Операции</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('journal')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>
+            <span>Журнал</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('balances')">
+            <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 13c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm7-6h-2.12c-.52-2.82-3.1-5-6.13-5S5.17 7.18 4.65 10H2.52l2.12-3.18L12 1.5l7.37 5.32L21.48 10z"></path></svg>
+            <span>Балансы</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('analytics')">
+            <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"></path></svg>
+            <span>Аналитика</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('approvals')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+            <span>Подтверждения</span>
+        </button>
 
         <button class="nav-tab theme-toggle-sidebar" onclick="toggleTheme()">
-            🌙 Темная тема
+            <svg id="theme-icon-svg" viewBox="0 0 24 24">
+                <path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"></path>
+            </svg>
+            <span id="theme-text-span">Темная тема</span>
         </button>
     </div>
 
@@ -434,20 +438,20 @@
             </div>
             
             <div class="action-buttons">
-                </div>
+            </div>
 
             <div class="chart-container">
-                <h3>📊 Расходы по категориям (последние 30 дней)</h3>
+                <h3>Расходы по категориям (последние 30 дней)</h3>
                 <div class="chart" id="categoryChart">Загрузка данных...</div>
             </div>
             <div class="chart-container">
-                <h3>📈 Тренд расходов</h3>
+                <h3>Тренд расходов</h3>
                 <div class="chart" id="trendChart">Загрузка данных...</div>
             </div>
         </div>
         
         <div id="operations" class="content">
-            <h2 style="margin-bottom: 20px;">💼 Управление операциями</h2>
+            <h2 style="margin-bottom: 20px;">Управление операциями</h2>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                 
@@ -460,7 +464,7 @@
         </div>
 
         <div id="journal" class="content">
-             <h2 style="margin-bottom: 20px;">📋 Журнал операций</h2>
+             <h2 style="margin-bottom: 20px;">Журнал операций</h2>
             <div class="filters">
                 <div class="filter-group">
                     <label>Дата от</label>
@@ -518,14 +522,14 @@
         </div>
         
         <div id="balances" class="content">
-            <h2 style="margin-bottom: 20px;">💵 Балансы сотрудников</h2>
+            <h2 style="margin-bottom: 20px;">Балансы сотрудников</h2>
             <div class="balance-list" id="balancesList">
                 <div class="loading"><div class="spinner"></div><p>Загрузка данных...</p></div>
             </div>
         </div>
         
         <div id="analytics" class="content">
-            <h2 style="margin-bottom: 20px;">📈 Аналитика</h2>
+            <h2 style="margin-bottom: 20px;">Аналитика</h2>
             <div class="filters">
                 <div class="filter-group">
                     <label>Период</label>
@@ -547,21 +551,21 @@
                 </div>
             </div>
             <div class="chart-container">
-                <h3>📊 Расходы по категориям</h3>
+                <h3>Расходы по категориям</h3>
                 <div class="chart" id="analyticsCategoryChart">Загрузка данных...</div>
             </div>
             <div class="chart-container">
-                <h3>👥 Расходы по сотрудникам</h3>
+                <h3>Расходы по сотрудникам</h3>
                 <div class="chart" id="analyticsEmployeeChart">Загрузка данных...</div>
             </div>
             <div class="chart-container">
-                <h3>📈 Тренд расходов</h3>
+                <h3>Тренд расходов</h3>
                 <div class="chart" id="analyticsTrendChart">Загрузка данных...</div>
             </div>
         </div>
         
         <div id="approvals" class="content">
-            <h2 style="margin-bottom: 20px;">✅ Подтверждение запросов</h2>
+            <h2 style="margin-bottom: 20px;">Подтверждение запросов</h2>
             <div class="table-container">
                 <table id="approvalsTable">
                     <thead>
@@ -585,7 +589,7 @@
         <div id="requestFundsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>📥 Запросить средства</h2>
+                    <h2>Запросить средства</h2>
                     <button class="modal-close" onclick="closeModal('requestFundsModal')">✕</button>
                 </div>
                 <form onsubmit="submitRequestFunds(event)">
@@ -604,7 +608,7 @@
         <div id="recordExpenseModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>💸 Совершить расход</h2>
+                    <h2>Совершить расход</h2>
                     <button class="modal-close" onclick="closeModal('recordExpenseModal')">✕</button>
                 </div>
                 <form onsubmit="submitRecordExpense(event)">
@@ -638,7 +642,7 @@
         <div id="transferFundsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>↔️ Передать средства</h2>
+                    <h2>Передать средства</h2>
                     <button class="modal-close" onclick="closeModal('transferFundsModal')">✕</button>
                 </div>
                 <form onsubmit="submitTransferFunds(event)">
@@ -664,7 +668,7 @@
         <div id="issueFundsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>💰 Выдать средства</h2>
+                    <h2>Выдать средства</h2>
                     <button class="modal-close" onclick="closeModal('issueFundsModal')">✕</button>
                 </div>
                 <form onsubmit="submitIssueFunds(event)">
@@ -689,7 +693,7 @@
         <div id="addCategoryModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>📁 Добавить категорию</h2>
+                    <h2>Добавить категорию</h2>
                     <button class="modal-close" onclick="closeModal('addCategoryModal')">✕</button>
                 </div>
                 <form onsubmit="submitAddCategory(event)">
@@ -734,7 +738,7 @@
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text-plain;charset=utf-8' }, 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                     body: JSON.stringify({ action, payload })
                 });
                 
@@ -775,6 +779,11 @@
         let currentUserId = null; 
         let currentUserRole = 'Загрузка...';
         let categoriesData = {};
+        
+        // НОВЫЕ: Пути к SVG иконкам для темы
+        const svgPathMoon = "M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z";
+        const svgPathSun = "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.73 12.73c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.61c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zm-12.73 12.73c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z";
+
 
         function getTelegramUserId() {
             try {
@@ -798,7 +807,7 @@
         }
 
         // ============================================================================
-        // ИНИЦИАЛИЗАЦИЯ (ИЗМЕНЕНО: Добавлена TWA MainButton)
+        // ИНИЦИАЛИЗАЦИЯ (Без изменений)
         // ============================================================================
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -815,11 +824,11 @@
                       console.error("Ошибка при вызове Telegram.WebApp.ready(): ", e);
                    }
                 }
-                initializeWebApp(); // Вызываем инициализацию ПОСЛЕ загрузки скрипта
+                initializeWebApp();
             };
             tgScript.onerror = () => {
                 console.error('❌ Не удалось загрузить скрипт Telegram WebApp.');
-                initializeWebApp(); // Все равно инициализируем
+                initializeWebApp();
             };
             document.head.appendChild(tgScript);
         });
@@ -830,21 +839,21 @@
             localStorage.setItem('userId', currentUserId);
             console.log('👤 Установлен currentUserId:', currentUserId);
             
-            // --- НОВЫЙ КОД: Настройка TWA MainButton ---
-            // Проверяем, что WebApp API доступно
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
                 try {
+                    Telegram.WebApp.expand();
+                    console.log('✅ TWA.expand() вызван.');
+                    
                     Telegram.WebApp.MainButton.setText('Меню');
                     Telegram.WebApp.MainButton.show();
                     Telegram.WebApp.MainButton.onClick(toggleSidebar); 
-                    console.log('✅ TWA MainButton настроена для открытия/закрытия сайдбара.');
+                    console.log('✅ TWA MainButton настроена.');
                 } catch (e) {
-                    console.error('❌ Ошибка настройки TWA MainButton:', e);
+                    console.error('❌ Ошибка настройки TWA:', e);
                 }
             } else {
-                console.warn('⚠️ TWA не инициализирован, MainButton не будет показана.');
+                console.warn('⚠️ TWA не инициализирован, MainButton и expand() не будут вызваны.');
             }
-            // --- КОНЕЦ НОВОГО КОДА ---
 
             applyTheme(currentTheme);
             await loadData();
@@ -853,16 +862,12 @@
         }
 
         // ============================================================================
-        // УПРАВЛЕНИЕ САЙДБАРОМ (ИЗМЕНЕНО: Управляет TWA MainButton)
+        // УПРАВЛЕНИЕ САЙДБАРОМ (Без изменений)
         // ============================================================================
 
-        /**
-         * Открывает/закрывает боковое меню
-         */
         function toggleSidebar() {
             const isOpen = document.body.classList.toggle('sidebar-open');
             
-            // --- НОВЫЙ КОД: Обновляем текст кнопки TWA ---
             if (window.Telegram && window.Telegram.WebApp) {
                 try {
                     Telegram.WebApp.MainButton.setText(isOpen ? 'Закрыть' : 'Меню');
@@ -870,11 +875,10 @@
                     console.error("Ошибка обновления текста MainButton:", e);
                 }
             }
-            // --- КОНЕЦ НОВОГО КОДА ---
         }
 
         // ============================================================================
-        // НАВИГАЦИЯ (ИЗМЕНЕНО: Сбрасывает TWA MainButton)
+        // НАВИГАЦИЯ (Без изменений)
         // ============================================================================
 
         function switchTab(tabName) {
@@ -890,16 +894,13 @@
             if (activeContent) activeContent.classList.add('active');
             if (activeTab) activeTab.classList.add('active');
 
-            // Загружаем данные для конкретных вкладок при их открытии
             if (tabName === 'journal') loadJournal();
             else if (tabName === 'balances') loadBalances();
             else if (tabName === 'analytics') loadAnalytics();
             else if (tabName === 'approvals') loadApprovals();
 
-            // Закрываем сайдбар при выборе пункта меню
             document.body.classList.remove('sidebar-open');
             
-            // --- НОВЫЙ КОД: Сбрасываем текст кнопки TWA ---
             if (window.Telegram && window.Telegram.WebApp) {
                  try {
                     Telegram.WebApp.MainButton.setText('Меню');
@@ -907,7 +908,6 @@
                     console.error("Ошибка сброса текста MainButton:", e);
                  }
             }
-            // --- КОНЕЦ НОВОГО КОДА ---
         }
 
         // ============================================================================
@@ -936,8 +936,6 @@
                 if (activeTab) {
                     const activeTabName = activeTab.getAttribute('onclick').match(/switchTab\('(\w+)'\)/)[1];
                      if (activeTabName !== 'dashboard') {
-                        // switchTab(activeTabName); // Не вызываем, чтобы не сбить TWA кнопку
-                        // Просто перерисовываем данные
                         if (activeTabName === 'journal') loadJournal();
                         else if (activeTabName === 'balances') loadBalances();
                         else if (activeTabName === 'analytics') loadAnalytics();
@@ -1000,7 +998,7 @@
         }
 
         // ============================================================================
-        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (submitReturnFunds УДАЛЕНА)
+        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (Без изменений)
         // ============================================================================
 
         async function submitRequestFunds(event) {
@@ -1120,8 +1118,6 @@
             }
         }
 
-        /* submitReturnFunds() удалена */
-
         async function submitIssueFunds(event) {
             event.preventDefault();
             const toSelect = document.getElementById('issueTo');
@@ -1168,13 +1164,10 @@
             try {
                 const log = allData.log || [];
                 const tbody = document.getElementById('journalBody');
-                console.log('📰 Отрисовка журнала, записей:', log.length);
-
                 if (log.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Нет данных</td></tr>';
                     return;
                 }
-
                 let html = '';
                 for (let i = log.length - 1; i >= 0; i--) { 
                      const entry = log[i];
@@ -1193,11 +1186,9 @@
                         const category = entry[8] || ''; 
                         const subcategory = entry[9] || '';
                         const comment = entry[11] || '';
-
                         const statusClass = status === 'Подтверждено' ? 'status-approved' : (status === 'Ожидает' ? 'status-pending' : 'status-rejected');
                         const fromName = getNameById(fromId) || fromId;
                         const toName = getNameById(toId) || toId;
-
                         html += `
                             <tr>
                                 <td>${date}</td>
@@ -1215,9 +1206,7 @@
                          console.error("Ошибка обработки строки журнала:", rowError, entry);
                     }
                 } 
-
                 tbody.innerHTML = html;
-                 console.log('✅ Журнал отрисован.');
             } catch (e) {
                  console.error("❌ Ошибка при отрисовке журнала:", e);
                  showAlert("Ошибка отображения журнала: " + e.message, 'error');
@@ -1234,30 +1223,22 @@
                 const status = document.getElementById('filterStatus').value;
                 const dateFrom = dateFromValue ? new Date(dateFromValue + 'T00:00:00') : null;
                 const dateTo = dateToValue ? new Date(dateToValue + 'T23:59:59') : null;
-
-                console.log('🔍 Применение фильтров:', { dateFrom, dateTo, type, status });
-
                 const tbody = document.getElementById('journalBody');
                 let html = '';
                 let count = 0;
-
                 for (let i = log.length - 1; i >= 0; i--) {
                     const entry = log[i];
                     if (!Array.isArray(entry) || entry.length < 12) continue;
-
                     try {
                         const entryDate = entry[0] ? new Date(entry[0]) : null; 
                         if (!entryDate) continue;
-
                         const entryType = String(entry[2] || '');
                         const entryStatus = String(entry[3] || '');
-
                         let matches = true;
                         if (dateFrom && entryDate < dateFrom) matches = false;
                         if (dateTo && entryDate > dateTo) matches = false;
                         if (type && entryType !== type) matches = false;
                         if (status && entryStatus !== status) matches = false;
-
                         if (matches) {
                             count++;
                             const dateStr = entryDate.toLocaleDateString('ru-RU');
@@ -1268,11 +1249,9 @@
                             const category = entry[8] || '';
                             const subcategory = entry[9] || '';
                             const comment = entry[11] || '';
-
                             const statusClass = entryStatus === 'Подтверждено' ? 'status-approved' : (entryStatus === 'Ожидает' ? 'status-pending' : 'status-rejected');
                             const fromName = getNameById(fromId) || fromId;
                             const toName = getNameById(toId) || toId;
-
                             html += `
                                 <tr>
                                     <td>${dateStr}</td>
@@ -1291,9 +1270,7 @@
                         console.error("Ошибка обработки строки при фильтрации:", filterRowError, entry);
                     }
                 }
-
                 tbody.innerHTML = html || `<tr><td colspan="9" class="empty-state">Нет данных по фильтрам (${count} найдено)</td></tr>`;
-                 console.log(`✅ Фильтры применены, найдено ${count} записей.`);
             } catch(e) {
                  console.error("❌ Ошибка применения фильтров:", e);
                  showAlert("Ошибка фильтрации: " + e.message, 'error');
@@ -1307,7 +1284,6 @@
             document.getElementById('filterType').value = '';
             document.getElementById('filterStatus').value = '';
             loadJournal();
-             console.log('Фильтры сброшены.');
         }
 
         function exportToCSV() {
@@ -1322,13 +1298,10 @@
             try {
                 const balances = allData.balances || [];
                 const container = document.getElementById('balancesList');
-                 console.log('💵 Отрисовка балансов, записей:', balances.length);
-
                 if (balances.length === 0) {
                     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">Нет данных о балансах</div></div>';
                     return;
                 }
-
                 let html = '';
                 balances.forEach(balance => {
                      if (!Array.isArray(balance) || balance.length < 3) {
@@ -1339,7 +1312,6 @@
                     const name = balance[1] || 'Неизвестно';
                     const value = parseFloat(balance[2]) || 0;
                     const valueClass = value >= 0 ? 'positive' : 'negative';
-
                     html += `
                         <div class="balance-item">
                             <div class="balance-item-info">
@@ -1350,9 +1322,7 @@
                         </div>
                     `;
                 });
-
                 container.innerHTML = html;
-                console.log('✅ Балансы отрисованы.');
             } catch(e) {
                 console.error("❌ Ошибка отрисовки балансов:", e);
                 showAlert("Ошибка отображения балансов: " + e.message, 'error');
@@ -1377,21 +1347,15 @@
             try {
                 const log = allData.log || [];
                 const tbody = document.getElementById('approvalsBody');
-                 console.log('✅ Отрисовка подтверждений, записей в логе:', log.length);
-
                 const pendingRequests = log.filter(entry => 
                     Array.isArray(entry) && entry.length > 3 && entry[2] === 'Запрос' && entry[3] === 'Ожидает'
                 );
-                console.log('⏳ Найдено ожидающих запросов:', pendingRequests.length);
-
                 if (pendingRequests.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет ожидающих запросов</td></tr>';
                     return;
                 }
-
                 let html = '';
                 pendingRequests.sort((a,b) => new Date(b[0]) - new Date(a[0])); 
-
                 pendingRequests.forEach(entry => {
                     try {
                         const date = entry[0] ? new Date(entry[0]).toLocaleDateString('ru-RU') : 'N/A';
@@ -1401,7 +1365,6 @@
                         const amount = entry[4];
                         const status = entry[3];
                         const comment = entry[11] || '';
-
                         html += `
                             <tr>
                                 <td>${date}</td>
@@ -1420,9 +1383,7 @@
                          console.error("Ошибка обработки строки подтверждения:", approveRowError, entry);
                      }
                 });
-
                 tbody.innerHTML = html;
-                console.log('✅ Подтверждения отрисованы.');
             } catch(e) {
                 console.error("❌ Ошибка отрисовки подтверждений:", e);
                 showAlert("Ошибка отображения подтверждений: " + e.message, 'error');
@@ -1439,12 +1400,10 @@
             try {
                 if(approveButton) approveButton.disabled = true;
                 if(rejectButton) rejectButton.disabled = true;
-
                 const result = await callApi('approveRequestWeb', payload);
                 if (result.success) {
                     showAlert('✅ Запрос подтвержден!', 'success');
                     await loadData();
-                    
                     if (document.getElementById('approvals').classList.contains('active')) {
                          loadApprovals();
                     }
@@ -1465,16 +1424,13 @@
             const payload = { requestId: requestId };
              const approveButton = document.querySelector(`button[onclick="approveRequest('${requestId}')"]`);
             const rejectButton = document.querySelector(`button[onclick="rejectRequest('${requestId}')"]`);
-
             try {
                  if(approveButton) approveButton.disabled = true;
                  if(rejectButton) rejectButton.disabled = true;
-
                 const result = await callApi('rejectRequestWeb', payload);
                 if (result.success) {
                     showAlert('✅ Запрос отклонен!', 'success');
                     await loadData(); 
-                    
                     if (document.getElementById('approvals').classList.contains('active')) {
                          loadApprovals(); 
                     }
@@ -1507,7 +1463,7 @@
         }
 
         // ============================================================================
-        // ВСПОМОГАТЕЛЬНЫЕ (ИЗМЕНЕНЫ: `checkCategoryManagementAccess`, `toggleTheme`, `applyTheme`)
+        // ВСПОМОГАТЕЛЬНЫЕ (Без изменений)
         // ============================================================================
 
         function getNameById(id) {
@@ -1524,9 +1480,7 @@
 
         function formatCurrency(value) {
             const number = parseFloat(value);
-            if (isNaN(number)) {
-                return 'N/A ';
-            }
+            if (isNaN(number)) { return 'N/A '; }
             return new Intl.NumberFormat('ru-RU', {
                 style: 'currency',
                 currency: 'RUB',
@@ -1539,10 +1493,8 @@
         function populateSelects() {
             try {
                 const admin = allData.admin || [];
-                 console.log('👥 Заполнение select-ов сотрудниками:', admin.length);
                 let optionsHtml = '<option value="">Выберите сотрудника...</option>';
                 let count = 0;
-
                 admin.forEach(person => {
                     if (!Array.isArray(person) || person.length < 4) {
                          console.warn("Некорректная запись сотрудника:", person);
@@ -1551,20 +1503,15 @@
                     const id = String(person[0]).trim();
                     const name = person[2] || `ID:${id}`;
                     const status = String(person[3] || '').trim().toLowerCase();
-
                     if (status === 'active') {
                         optionsHtml += `<option value="${id}">${name}</option>`;
                         count++;
                     }
                 });
-
                 const transferSelect = document.getElementById('transferTo');
                 const issueSelect = document.getElementById('issueTo');
-                
                 if(transferSelect) transferSelect.innerHTML = optionsHtml;
                 if(issueSelect) issueSelect.innerHTML = optionsHtml;
-
-                console.log(`✅ Select-ы заполнены ${count} активными сотрудниками.`);
             } catch(e) {
                  console.error("❌ Ошибка при заполнении select-ов:", e);
                  showAlert("Ошибка загрузки списка сотрудников: " + e.message, 'error');
@@ -1573,11 +1520,8 @@
 
 
         async function loadCategories() {
-            console.log('📁 Загрузка категорий...');
             try {
                 const categories = await callApi('getAllCategories'); 
-                console.log('✅ Категории получены от API:', categories);
-                
                 if (typeof categories === 'object' && categories !== null) {
                     categoriesData = categories;
                     updateCategorySelect();
@@ -1587,7 +1531,6 @@
                     updateCategorySelect();
                     showAlert('Ошибка: Не удалось загрузить категории в правильном формате.', 'error');
                 }
-                
             } catch (error) {
                 console.error('❌ Ошибка загрузки категорий:', error);
                 showAlert('❌ Ошибка загрузки категорий: ' + error.message, 'error');
@@ -1600,18 +1543,13 @@
             try {
                 const select = document.getElementById('expenseCategory');
                 if (!select) return;
-
                 let optionsHtml = '<option value="">Выберите категорию...</option>';
                 const categoryKeys = Object.keys(categoriesData || {});
-                console.log('🔄 Обновление select категорий. Ключи:', categoryKeys);
-
                 categoryKeys.sort().forEach(category => {
                     optionsHtml += `<option value="${category}">${category}</option>`;
                 });
-
                 select.innerHTML = optionsHtml;
                 updateSubcategories(); 
-                console.log('✅ Select категорий обновлен.');
             } catch(e) {
                  console.error("❌ Ошибка обновления select категорий:", e);
                  showAlert("Ошибка отображения категорий: " + e.message, 'error');
@@ -1624,19 +1562,14 @@
                 const categorySelect = document.getElementById('expenseCategory');
                 const subcategorySelect = document.getElementById('expenseSubcategory');
                 if (!categorySelect || !subcategorySelect) return;
-
                 const selectedCategory = categorySelect.value;
                 let optionsHtml = '<option value="">Выберите подкатегорию...</option>';
-                console.log(`🔄 Обновление подкатегорий для "${selectedCategory}"`);
-
                 if (selectedCategory && categoriesData && Array.isArray(categoriesData[selectedCategory])) {
                     categoriesData[selectedCategory].sort().forEach(subcategory => {
                         optionsHtml += `<option value="${subcategory}">${subcategory}</option>`;
                     });
                 }
-
                 subcategorySelect.innerHTML = optionsHtml;
-                console.log('✅ Select подкатегорий обновлен.');
             } catch(e) {
                  console.error("❌ Ошибка обновления select подкатегорий:", e);
                  showAlert("Ошибка отображения подкатегорий: " + e.message, 'error');
@@ -1644,21 +1577,15 @@
         }
 
 
-        /**
-         * ИЗМЕНЕНО: Обновляет #userRole в .welcome-header
-         */
         function checkCategoryManagementAccess() {
             const admin = allData.admin || [];
             let roleFound = false;
             currentUserRole = 'Не авторизован';
             
-            console.log(`🔐 Проверка прав доступа для ID: ${currentUserId}`);
-
             for (let i = 0; i < admin.length; i++) {
                 if (Array.isArray(admin[i]) && String(admin[i][0]).trim() === String(currentUserId).trim()) {
                     currentUserRole = admin[i][1] || 'Не определена';
                     roleFound = true;
-                    console.log(`👤 Роль найдена: ${currentUserRole}`);
                     break;
                 }
             }
@@ -1666,30 +1593,23 @@
                  console.warn(`👤 Роль для ID ${currentUserId} не найдена в списке Admin.`);
             }
             
-            // --- ИЗМЕНЕНИЕ: Обновляем роль в .welcome-header ---
             const userRoleSpan = document.getElementById('userRole');
             if(userRoleSpan) {
                 userRoleSpan.textContent = 'Ваша роль: ' + currentUserRole;
             }
-            // --- КОНЕЦ ИЗМЕНЕНИЯ ---
 
-            // Управление кнопкой "Добавить категорию"
             const allowedRoles = ['Директор', 'Бухгалтер', 'Ответственный'];
             const addBtn = document.getElementById('addCategoryBtn');
             if (addBtn) {
                  const canAdd = allowedRoles.includes(currentUserRole);
                  addBtn.style.display = canAdd ? 'inline-block' : 'none';
-                 console.log(`🔧 Кнопка добавления категории ${canAdd ? 'показана' : 'скрыта'}.`);
             }
             
-            // Управление кнопкой "Выдать средства"
             const issueFundsCard = document.getElementById('issueFundsCard');
             if (issueFundsCard) {
                 const canIssueRoles = ['Директор', 'Бухгалтер'];
                 const canIssue = canIssueRoles.includes(currentUserRole);
-                
                 issueFundsCard.style.display = canIssue ? 'block' : 'none'; 
-                console.log(`🔧 Кнопка "Выдать средства" ${canIssue ? 'показана' : 'скрыта'} для роли: ${currentUserRole}.`);
             }
         }
 
@@ -1736,14 +1656,9 @@
             const alertId = type + 'Alert';
             const alertElement = document.getElementById(alertId);
             if (!alertElement) return;
-
-            if (alertElement.timerId) {
-                clearTimeout(alertElement.timerId);
-            }
-
+            if (alertElement.timerId) { clearTimeout(alertElement.timerId); }
             alertElement.textContent = message;
             alertElement.classList.add('active');
-
             alertElement.timerId = setTimeout(() => {
                 alertElement.classList.remove('active');
                 alertElement.timerId = null;
@@ -1751,35 +1666,34 @@
         }
 
         // ============================================================================
-        // ТЕМА И ЗАКРЫТИЕ МОДАЛЕЙ (ИЗМЕНЕНЫ: Обновляют новую кнопку темы)
+        // ТЕМА (ИЗМЕНЕНО: Обновляет SVG иконку и текст)
         // ============================================================================
         
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', currentTheme);
             applyTheme(currentTheme);
-            // --- ИЗМЕНЕНИЕ: Обновляем текст кнопки в сайдбаре ---
-             const themeToggleButton = document.querySelector('.theme-toggle-sidebar');
-             if(themeToggleButton) {
-                themeToggleButton.textContent = currentTheme === 'light' ? '🌙 Темная тема' : '☀️ Светлая тема';
-             }
         }
 
         function applyTheme(theme) {
+            const themeIcon = document.getElementById('theme-icon-svg');
+            const themeText = document.getElementById('theme-text-span');
+
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');
+                if (themeIcon) themeIcon.innerHTML = `<path d="${svgPathSun}"></path>`;
+                if (themeText) themeText.textContent = 'Светлая тема';
             } else {
                 document.body.classList.remove('dark-theme');
+                if (themeIcon) themeIcon.innerHTML = `<path d="${svgPathMoon}"></path>`;
+                if (themeText) themeText.textContent = 'Темная тема';
             }
              console.log(`🎨 Тема применена: ${theme}`);
-             // --- ИЗМЕНЕНИЕ: Обновляем текст кнопки в сайдбаре ---
-             const themeToggleButton = document.querySelector('.theme-toggle-sidebar');
-             if(themeToggleButton) {
-                themeToggleButton.textContent = theme === 'light' ? '🌙 Темная тема' : '☀️ Светлая тема';
-             }
         }
 
-        // Закрыть модал при клике на фон
+        // ============================================================================
+        // ЗАКРЫТИЕ МОДАЛЕЙ (Без изменений)
+        // ============================================================================
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 document.querySelectorAll('.modal.active').forEach(modal => {
