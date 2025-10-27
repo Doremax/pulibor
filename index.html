@@ -11,11 +11,6 @@
             box-sizing: border-box;
         }
 
-        /* * ============================================================================
-         * НОВЫЕ СТИЛИ: МАКЕТ С САЙДБАРОМ (План "Б")
-         * ============================================================================
-        */
-
         :root {
             --sidebar-width: 240px;
             --bottom-bar-height: 65px;
@@ -24,48 +19,48 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ee 100%);
             min-height: 100vh;
-            
-            /* 1. Делаем body сеткой (сайдбар + контент) */
-            display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr; 
-            grid-template-rows: 1fr;
-            padding: 0; /* Убираем старый padding */
-            
-            /* ИЗМЕНЕНИЕ: Анимация для смены колонок */
-            transition: grid-template-columns var(--transition-speed) ease;
-        }
-
-        /* 2. .nav-tabs (теперь сайдбар) */
-        .nav-tabs {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-            display: flex;
-            flex-direction: column; /* Вертикальное меню */
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            border-bottom: none; /* Убираем старую границу */
-            overflow-y: auto; 
-            padding-top: 20px;
-            
-            /* ИЗМЕНЕНИЕ: Анимация для "уезжания" */
-            transform: translateX(0);
-            transition: transform var(--transition-speed) ease;
-            z-index: 100; /* На всякий случай, поверх контента */
+            padding: 0; 
+            /* Стили для body.sidebar-open будут управлять сдвигом */
         }
         
-        /* 3. Стили кнопок в сайдбаре */
+        /* * ============================================================================
+         * НОВЫЕ СТИЛИ: СКЛАДНОЙ САЙДБАР (План "В")
+         * ============================================================================
+        */
+
+        /* 1. .nav-tabs (Сайдбар) */
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            display: flex;
+            flex-direction: column; 
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-bottom: none;
+            overflow-y: auto; 
+            padding-top: 20px;
+            z-index: 1100; /* Выше чем .sidebar-overlay */
+            
+            /* Скрыт по умолчанию */
+            transform: translateX(calc(var(--sidebar-width) * -1));
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        /* 2. Стили кнопок в сайдбаре (как в прошлый раз) */
         .nav-tab {
-            flex: auto; /* Сброс flex: 1 */
+            flex: auto;
             text-align: left;
             padding: 16px 20px;
             font-size: 15px;
             color: rgba(255, 255, 255, 0.8);
-            border-bottom: none; 
+            border: none;
             border-left: 4px solid transparent; 
             background: transparent;
             min-width: 0;
-            white-space: nowrap; /* Чтобы текст не переносился при анимации */
         }
         .nav-tab:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -75,34 +70,31 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-weight: 600;
-            border-bottom-color: transparent; /* Переопределяем старое правило */
+            border-bottom-color: transparent;
             border-left-color: white;
         }
 
-        /* 4. .container (правая часть) */
+        /* 3. Контейнер (Правая часть) */
         .container {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-            margin: 0; /* Сброс margin: auto */
-            max-width: none; /* Сброс max-width */
+            margin: 0;
+            max-width: none;
             border-radius: 0;
-            box-shadow: none; /* Убираем тень */
-            overflow-y: auto; /* Контент скроллится НЕЗАВИСИМО от сайдбара */
-            height: 100vh; /* Занимает всю высоту сетки */
-            /* Добавляем padding снизу для .bottom-action-bar */
+            box-shadow: none;
+            height: 100vh;
+            overflow-y: auto;
             padding-bottom: calc(var(--bottom-bar-height) + 20px);
-            background: white; /* Фон для .container, т.к. body больше не белый */
+            background: white;
+            
+            /* Анимация сдвига */
+            width: 100%;
+            margin-left: 0;
+            transition: margin-left var(--transition-speed) ease;
         }
         
-        /* * ============================================================================
-         * НОВЫЕ СТИЛИ: НИЖНЯЯ ПАНЕЛЬ ДЕЙСТВИЙ
-         * ============================================================================
-        */
+        /* 4. Нижняя панель действий */
         .bottom-action-bar {
             position: fixed;
             bottom: 0;
-            left: var(--sidebar-width); /* Начинается после сайдбара */
-            width: calc(100% - var(--sidebar-width)); /* Занимает оставшуюся ширину */
             height: var(--bottom-bar-height);
             background: #ffffff;
             border-top: 1px solid #e0e0e0;
@@ -113,119 +105,129 @@
             z-index: 900;
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
             
-            /* ИЗМЕНЕНИЕ: Анимация для ширины/позиции */
-            transition: all var(--transition-speed) ease;
+            /* Анимация сдвига */
+            left: 0;
+            width: 100%;
+            transition: left var(--transition-speed) ease, width var(--transition-speed) ease;
         }
-        .bottom-action-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px 5px;
-            border-radius: 8px;
-            transition: background 0.3s;
-            color: #555;
-            height: 100%;
-        }
-        .bottom-action-btn:hover {
-            background: #f4f4f4;
-        }
-        .bottom-action-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-        .bottom-action-btn span {
-            font-size: 12px;
-            font-weight: 500;
-        }
+        .bottom-action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; padding: 8px 5px; border-radius: 8px; transition: background 0.3s; color: #555; height: 100%; }
+        .bottom-action-btn:hover { background: #f4f4f4; }
+        .bottom-action-icon { font-size: 24px; margin-bottom: 4px; }
+        .bottom-action-btn span { font-size: 12px; font-weight: 500; }
         
-        /* * ============================================================================
-         * НОВЫЕ СТИЛИ: КНОПКА СВЕРНУТЬ/РАЗВЕРНУТЬ САЙДБАР
-         * ============================================================================
-        */
+        /* 5. Кнопка "Гамбургер" */
         .sidebar-toggle {
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            padding: 8px 12px;
+            padding: 8px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 20px;
-            line-height: 1;
             transition: background 0.3s;
-            display: none; /* По умолчанию скрыта */
+            width: 38px;
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .sidebar-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s;
         }
         .sidebar-toggle:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+
+        /* 6. Оверлей (для мобильных) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050; /* Ниже сайдбара, но выше контента */
+            display: none;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+        }
+
+        /* 7. Логика открытия (Управляется JS) */
         
-        /* Показываем кнопку только на десктопе (когда сайдбар активен) */
-        @media (min-width: 769px) {
-            .sidebar-toggle {
+        /* Показываем сайдбар */
+        body.sidebar-open .nav-tabs {
+            transform: translateX(0);
+        }
+
+        /* Показываем оверлей на мобильных */
+        @media (max-width: 768px) {
+            body.sidebar-open .sidebar-overlay {
                 display: block;
+                opacity: 1;
+            }
+        }
+        
+        /* "Толкаем" контент на десктопе */
+        @media (min-width: 769px) {
+            body.sidebar-open .container {
+                margin-left: var(--sidebar-width);
+                width: calc(100% - var(--sidebar-width));
+            }
+            body.sidebar-open .bottom-action-bar {
+                left: var(--sidebar-width);
+                width: calc(100% - var(--sidebar-width));
             }
         }
 
         /* * ============================================================================
-         * НОВЫЕ СТИЛИ: СОСТОЯНИЕ СВЕРНУТОГО САЙДБАРА
-         * ============================================================================
-        */
-        body.sidebar-collapsed {
-            grid-template-columns: 0px 1fr;
-        }
-        body.sidebar-collapsed .nav-tabs {
-            transform: translateX(-100%);
-        }
-        body.sidebar-collapsed .bottom-action-bar {
-            left: 0;
-            width: 100%;
-        }
-
-        /* * ============================================================================
-         * ОРИГИНАЛЬНЫЕ СТИЛИ (с небольшими правками)
+         * ОРИГИНАЛЬНЫЕ СТИЛИ (с правками)
          * ============================================================================
         */
         body {
-            /* Этот стиль переопределен выше для grid, 
-               но font-family и min-height остаются актуальными */
+            /* display: grid; - УДАЛЕНО */
         }
-
         .container {
-            /* Стили .container (margin, max-width, radius) 
-               переопределены выше для макета с сайдбаром */
-            overflow: hidden; /* Этот стиль оставляем */
+            /* grid-column, grid-row - УДАЛЕНЫ */
         }
 
         /* HEADER */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 20px 30px; /* Уменьшил padding */
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Изменено */
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
         }
-        .header h1 { font-size: 28px; font-weight: 600; }
-        .header-info { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; }
+        .header h1 { 
+            font-size: 28px; 
+            font-weight: 600; 
+            margin: 0; /* Сброс margin */
+        }
+        .header-info { 
+            display: flex; 
+            gap: 30px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            margin-left: auto; /* Прижимаем вправо */
+        }
         .user-info { display: flex; align-items: center; gap: 10px; }
         .user-info span { font-size: 14px; opacity: 0.9; }
         .theme-toggle { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.3s; }
         .theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
 
         /* NAVIGATION */
-        /* Стили .nav-tabs и .nav-tab были переопределены выше для сайдбара */
+        /* Стили .nav-tabs и .nav-tab были переопределены выше */
 
         /* CONTENT */
-        .content {
-            padding: 30px;
-            display: none;
-        }
+        .content { padding: 30px; display: none; }
         .content.active { display: block; }
 
         /* CARDS */
@@ -339,58 +341,24 @@
         body.dark-theme {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
-
-        body.dark-theme .container {
-            background: #0f3460;
-            color: #e0e0e0;
-        }
+        body.dark-theme .container { background: #0f3460; color: #e0e0e0; }
         
         /* 1. Dark Theme для .nav-tabs (сайдбара) */
-        body.dark-theme .nav-tabs {
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            border-bottom-color: transparent;
-        }
-        body.dark-theme .nav-tab {
-            background: transparent;
-            color: #999;
-        }
-        body.dark-theme .nav-tab:hover {
-            background: #16213e;
-            color: #ccc;
-        }
-        body.dark-theme .nav-tab.active {
-            background: #0f3460;
-            color: #667eea;
-            border-left-color: #667eea;
-            border-bottom-color: transparent;
-        }
+        body.dark-theme .nav-tabs { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); border-bottom-color: transparent; }
+        body.dark-theme .nav-tab { background: transparent; color: #999; }
+        body.dark-theme .nav-tab:hover { background: #16213e; color: #ccc; }
+        body.dark-theme .nav-tab.active { background: #0f3460; color: #667eea; border-left-color: #667eea; border-bottom-color: transparent; }
 
         /* 2. Dark Theme для .bottom-action-bar */
-        body.dark-theme .bottom-action-bar {
-            background: #0f3460;
-            border-top-color: #16213e;
-        }
-        body.dark-theme .bottom-action-btn {
-            color: #ccc;
-        }
-        body.dark-theme .bottom-action-btn:hover {
-            background: #16213e;
-        }
+        body.dark-theme .bottom-action-bar { background: #0f3460; border-top-color: #16213e; }
+        body.dark-theme .bottom-action-btn { color: #ccc; }
+        body.dark-theme .bottom-action-btn:hover { background: #16213e; }
         
         /* 3. Остальные Dark Theme стили */
         body.dark-theme .form-container,
-        body.dark-theme .filters {
-            background: #1a1a2e;
-        }
-        body.dark-theme .form-group input,
-        body.dark-theme .form-group select,
-        body.dark-theme .form-group textarea,
-        body.dark-theme .filter-group input,
-        body.dark-theme .filter-group select {
-            background: #16213e;
-            border-color: #16213e;
-            color: #e0e0e0;
-        }
+        body.dark-theme .filters { background: #1a1a2e; }
+        body.dark-theme .form-group input, body.dark-theme .form-group select, body.dark-theme .form-group textarea,
+        body.dark-theme .filter-group input, body.dark-theme .filter-group select { background: #16213e; border-color: #16213e; color: #e0e0e0; }
         body.dark-theme table { background: #1a1a2e; }
         body.dark-theme thead { background: #16213e; border-bottom-color: #16213e; }
         body.dark-theme th { color: #e0e0e0; }
@@ -412,105 +380,64 @@
          * ============================================================================
         */
         @media (max-width: 768px) {
-            :root {
-                --sidebar-width: 0px; /* Убираем сайдбар */
+            /* 1. Показываем оверлей при открытии */
+            body.sidebar-open .sidebar-overlay {
+                display: block;
+                opacity: 1;
             }
 
-            /* 1. Возвращаем body в обычный режим */
-            body {
-                display: block; /* Сбрасываем grid */
+            /* 2. Адаптация хедера под гамбургер */
+            .header {
+                flex-direction: row; 
+                justify-content: flex-start;
+                padding: 15px; /* Уменьшаем отступы */
+                gap: 15px; /* Уменьшаем разрыв */
+            }
+            .header h1 {
+                font-size: 20px;
+                margin: 0;
+            }
+            .header-info {
+                flex-direction: row;
+                width: auto;
+                margin-left: auto;
+                gap: 15px;
+            }
+            .user-info span {
+                 font-size: 12px;
+                 /* Можно скрыть текст, оставив иконку, если будет */
+            }
+            .theme-toggle {
+                font-size: 12px;
+                padding: 6px 10px;
             }
             
-            /* 2. .nav-tabs (возвращаем как было) */
-            .nav-tabs {
-                grid-column: auto;
-                grid-row: auto;
-                flex-direction: row; /* Возвращаем как было */
-                background: #f8f9fa; /* Старый фон */
-                border-bottom: 2px solid #e9ecef;
-                overflow-x: auto;
-                padding-top: 0;
-                height: auto; /* Сброс */
-                position: static; /* Сброс */
-                
-                /* ИЗМЕНЕНИЕ: Убедимся, что трансформация сброшена */
-                transform: translateX(0) !important; 
+            /* 3. Старые правила адаптивности (компоненты) */
+            .cards-grid {
+                grid-template-columns: 1fr;
             }
-            
-            /* 3. Стили кнопок .nav-tab (возвращаем как было) */
-            .nav-tab {
-                flex: 1;
-                text-align: center;
-                padding: 16px;
-                font-size: 14px;
-                color: #666;
-                border-left: none;
-                border-bottom: 3px solid transparent;
-                min-width: 120px;
+            .filters {
+                grid-template-columns: 1fr;
             }
-            .nav-tab:hover {
-                background: #e9ecef;
-                color: #333;
+            .card .value {
+                font-size: 24px;
             }
-            .nav-tab.active {
-                background: white;
-                color: #667eea;
-                border-bottom-color: #667eea;
-                border-left-color: transparent;
+            .modal-content {
+                width: 95%;
             }
 
-            /* 4. .container (возвращаем как было) */
-            .container {
-                grid-column: auto;
-                grid-row: auto;
-                height: auto; /* Сброс */
-                overflow-y: visible; /* Сброс */
-                /* Оставляем отступ для нижней панели */
-                padding-bottom: calc(var(--bottom-bar-height) + 20px); 
-            }
-            
-            /* 5. .bottom-action-bar (на всю ширину) */
-            .bottom-action-bar {
-                left: 0; /* На всю ширину */
-                width: 100%;
-            }
-
-            /* 6. Dark Theme Mobile (восстановление) */
-            body.dark-theme .nav-tabs {
-                background: #1a1a2e;
-                border-bottom-color: #16213e;
-            }
-            body.dark-theme .nav-tab {
-                background: #1a1a2e;
-                color: #999;
-            }
-            body.dark-theme .nav-tab:hover {
-                background: #16213e;
-                color: #ccc;
-            }
-            body.dark-theme .nav-tab.active {
-                background: #0f3460;
-                color: #667eea;
-                border-left-color: transparent;
-                border-bottom-color: #667eea;
-            }
-
-            /* 7. Оригинальные стили из @media */
-            .header { flex-direction: column; text-align: center; }
-            .header-info { flex-direction: column; width: 100%; }
-            .cards-grid { grid-template-columns: 1fr; }
-            .filters { grid-template-columns: 1fr; }
-            .card .value { font-size: 24px; }
-            .modal-content { width: 95%; }
-            
-            /* 8. ИЗМЕНЕНИЕ: Скрываем кнопку-гамбургер на мобильных */
-            .sidebar-toggle {
-                display: none;
-            }
+            /* * Старые правила для .nav-tabs (верхние табы) 
+             * были полностью удалены, т.к. теперь на мобильных 
+             * используется то же боковое меню, что и на десктопе,
+             * но в режиме "overlay".
+             */
         }
     </style>
 </head>
 <body>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <div class="nav-tabs">
         <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Главная</button>
         <button class="nav-tab" onclick="switchTab('operations')">💼 Операции</button>
@@ -522,11 +449,13 @@
 
     <div class="container">
         <div class="header">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-                <h1>💰 Система Учета Расходов</h1>
-            </div>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             
+            <h1>💰 Система Учета Расходов</h1>
             <div class="header-info">
                 <div class="user-info">
                     <span id="userRole">Роль: Загрузка...</span>
@@ -563,11 +492,7 @@
             </div>
             
             <div class="action-buttons">
-                <div class="action-card info" onclick="openModal('returnFundsModal')">
-                    <div class="action-card-icon">↩️</div>
-                    <div class="action-card-title">Вернуть остаток</div>
                 </div>
-            </div>
 
             <div class="chart-container">
                 <h3>📊 Расходы по категориям (последние 30 дней)</h3>
@@ -583,12 +508,6 @@
             <h2 style="margin-bottom: 20px;">💼 Управление операциями</h2>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="action-card info" onclick="openModal('returnFundsModal')" style="cursor: pointer;">
-                    <div class="action-card-icon">↩️</div>
-                    <div class="action-card-title">Вернуть остаток</div>
-                    <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Вернуть неиспользованные средства</p>
-                </div>
-                
                 <div id="issueFundsCard" class="action-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer;" onclick="openModal('issueFundsModal')">
                     <div class="action-card-icon">💰</div>
                     <div class="action-card-title">Выдать средства</div>
@@ -615,7 +534,6 @@
                         <option value="Запрос">Запрос</option>
                         <option value="Выдача">Выдача</option>
                         <option value="Расход">Расход</option>
-                        <option value="Возврат">Возврат</option>
                         <option value="Передача">Передача</option>
                     </select>
                 </div>
@@ -796,25 +714,7 @@
                 </form>
             </div>
         </div>
-        <div id="returnFundsModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>↩️ Вернуть остаток</h2>
-                    <button class="modal-close" onclick="closeModal('returnFundsModal')">✕</button>
-                </div>
-                <form onsubmit="submitReturnFunds(event)">
-                    <div class="form-group">
-                        <label>Сумма ()</label>
-                        <input type="number" id="returnAmount" min="1" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Комментарий</label>
-                        <textarea id="returnComment" rows="3" placeholder="Описание возврата..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Вернуть средства</button>
-                </form>
-            </div>
-        </div>
+        
         <div id="issueFundsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -878,28 +778,20 @@
     
  <script>
         // ============================================================================
-        // API "МОСТ" ДЛЯ NETLIFY
+        // API "МОСТ" (Без изменений)
         // ============================================================================
         
-        // ⚠️ ВАЖНО: Вставьте сюда URL вашего /exec развертывания Google Apps Script
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxQecW-l9396kc9CDct4I3nJv2eXZbRT9pd3IaZ_MMRMGO3Kjgk5jgsm84A4jyiMc7S7g/exec'; // <-- ЗАМЕНИТЕ НА ВАШ URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxQecW-l9396kc9CDct4I3nJv2eXZbRT9pd3IaZ_MMRMGO3Kjgk5jgsm84A4jyiMc7S7g/exec'; // <-- ВАШ URL
 
-        /**
-         * Вызывает бэкенд Google Apps Script
-         * @param {string} action - Название "кейса" в handleWebAppRequest
-         * @param {object} payload - Данные, которые нужно передать
-         */
         async function callApi(action, payload = {}) {
-            console.log(`🚀 Вызов API: ${action}`, payload); // Логирование вызова
+            console.log(`🚀 Вызов API: ${action}`, payload); 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    // Важно: Google Apps Script иногда требует text/plain для обхода CORS preflight
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                     body: JSON.stringify({ action, payload })
                 });
                 
-                // Логирование ответа перед парсингом JSON
                 const responseText = await response.text();
                 console.log(`📬 Ответ API (${action}): ${response.status} ${response.statusText}`, responseText);
 
@@ -909,13 +801,12 @@
                 
                 let result;
                 try {
-                    result = JSON.parse(responseText); // Парсим текст ответа
+                    result = JSON.parse(responseText);
                 } catch (jsonError) {
                     console.error('Ошибка парсинга JSON:', jsonError);
                     throw new Error(`Не удалось разобрать ответ сервера: ${responseText}`);
                 }
                 
-                // Обрабатываем ошибки, которые вернул наш бэкенд (e.g., success: false)
                 if (result.success === false && result.error) { 
                     throw new Error(result.error);
                 }
@@ -924,38 +815,23 @@
                 return result;
             } catch (error) {
                 console.error(`❌ Ошибка вызова API (${action}):`, error);
-                // Показываем ошибку пользователю
                 showAlert(`Критическая ошибка API (${action}): ${error.message}`, 'error'); 
-                throw error; // Передаем ошибку дальше для возможной обработки
+                throw error;
             }
         }
 
         // ============================================================================
-        // КОНФИГУРАЦИЯ
-        // (Добавлено isSidebarCollapsed)
+        // КОНФИГУРАЦИЯ (Без изменений)
         // ============================================================================
 
-        let allData = {
-            log: [],
-            balances: [],
-            admin: []
-        };
-
+        let allData = { log: [], balances: [], admin: [] };
         let currentTheme = localStorage.getItem('theme') || 'light';
-        // ИЗМЕНЕНИЕ: Читаем состояние сайдбара из localStorage
-        let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-        
-        // ID пользователя будет получен из Telegram или установлен по умолчанию
         let currentUserId = null; 
         let currentUserRole = 'Загрузка...';
         let categoriesData = {};
 
-        /**
-         * Получает ID пользователя из Telegram Mini App или возвращает ID по умолчанию
-         */
         function getTelegramUserId() {
             try {
-                // Проверяем, существует ли объект Telegram WebApp
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
                     const initData = window.Telegram.WebApp.initDataUnsafe;
                     if (initData.user && initData.user.id) {
@@ -965,29 +841,26 @@
                          console.warn('Telegram initData есть, но нет user.id:', initData);
                     }
                 } else {
-                     console.log('Объект Telegram WebApp не найден. Вероятно, запуск вне Telegram.');
+                     console.log('Объект Telegram WebApp не найден.');
                 }
             } catch (e) {
                 console.error('❌ Ошибка при получении Telegram InitData:', e);
             }
-            const defaultId = '1125736'; // <-- ВАШ ДЕМО ID ПО УМОЛЧАНИЮ
+            const defaultId = '1125736'; 
             console.warn(`⚠️ Не удалось определить Telegram User ID, используется ID по умолчанию: ${defaultId}`);
             return defaultId; 
         }
 
         // ============================================================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // (Добавлено applySidebarState)
+        // ИНИЦИАЛИЗАЦИЯ (Без изменений)
         // ============================================================================
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Загружаем скрипт Telegram WebApp
             const tgScript = document.createElement('script');
             tgScript.src = 'https://telegram.org/js/telegram-web-app.js';
-            tgScript.async = true; // Загружаем асинхронно
+            tgScript.async = true;
             tgScript.onload = () => {
                 console.log('✅ Скрипт Telegram WebApp загружен.');
-                // Сообщаем Telegram, что приложение готово (если оно запущено в Telegram)
                 if (window.Telegram && window.Telegram.WebApp) {
                    try {
                      window.Telegram.WebApp.ready(); 
@@ -996,35 +869,39 @@
                       console.error("Ошибка при вызове Telegram.WebApp.ready(): ", e);
                    }
                 }
-                initializeWebApp(); // Инициализируем приложение ПОСЛЕ загрузки скрипта
+                initializeWebApp();
             };
             tgScript.onerror = () => {
                 console.error('❌ Не удалось загрузить скрипт Telegram WebApp.');
-                initializeWebApp(); // Все равно инициализируем, но ID будет по умолчанию
+                initializeWebApp();
             };
             document.head.appendChild(tgScript);
         });
 
-        /**
-         * Запускает основную логику приложения
-         */
         async function initializeWebApp() {
             console.log('🚀 Инициализация приложения...');
-            currentUserId = getTelegramUserId(); // Определяем ID пользователя
-            localStorage.setItem('userId', currentUserId); // Сохраняем для возможного использования
+            currentUserId = getTelegramUserId();
+            localStorage.setItem('userId', currentUserId);
             console.log('👤 Установлен currentUserId:', currentUserId);
-            applyTheme(currentTheme); // Применяем тему
-            
-            // ИЗМЕНЕНИЕ: Применяем состояние сайдбара при загрузке
-            applySidebarState();
-            
-            await loadData(); // Первая загрузка данных (ждем завершения)
-            setInterval(loadData, 30000); // Настраиваем автообновление
+            applyTheme(currentTheme);
+            await loadData();
+            setInterval(loadData, 30000);
             console.log('🏁 Инициализация завершена.');
         }
 
         // ============================================================================
-        // НАВИГАЦИЯ (Без изменений)
+        // НОВЫЕ ФУНКЦИИ: УПРАВЛЕНИЕ САЙДБАРОМ
+        // ============================================================================
+
+        /**
+         * Открывает/закрывает боковое меню
+         */
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-open');
+        }
+
+        // ============================================================================
+        // НАВИГАЦИЯ (Изменено: закрывает сайдбар при клике)
         // ============================================================================
 
         function switchTab(tabName) {
@@ -1041,15 +918,13 @@
             if (activeTab) activeTab.classList.add('active');
 
             // Загружаем данные для конкретных вкладок при их открытии
-            if (tabName === 'journal') {
-                loadJournal(); // Перерисовываем с текущими данными allData
-            } else if (tabName === 'balances') {
-                loadBalances(); // Перерисовываем
-            } else if (tabName === 'analytics') {
-                loadAnalytics(); // Перерисовываем
-            } else if (tabName === 'approvals') {
-                loadApprovals(); // Перерисовываем
-            }
+            if (tabName === 'journal') loadJournal();
+            else if (tabName === 'balances') loadBalances();
+            else if (tabName === 'analytics') loadAnalytics();
+            else if (tabName === 'approvals') loadApprovals();
+
+            // ИЗМЕНЕНИЕ: Закрываем сайдбар при выборе пункта меню
+            document.body.classList.remove('sidebar-open');
         }
 
         // ============================================================================
@@ -1058,13 +933,10 @@
 
         async function loadData() {
             console.log('📨 Загрузка данных (Netlify)...');
-            // Показать индикатор загрузки (опционально)
-            // showLoadingIndicator(true); 
             try {
                 const data = await callApi('getData'); 
                 console.log('✅ Данные получены от API:', data);
                 
-                // Убедимся, что данные существуют и являются массивами
                 allData = {
                     log: Array.isArray(data.log) ? data.log : [],
                     balances: Array.isArray(data.balances) ? data.balances : [],
@@ -1074,25 +946,20 @@
 
                 updateDashboard();
                 populateSelects();
-                checkCategoryManagementAccess(); // Проверка роли *после* загрузки данных
-                await loadCategories(); // Загружаем/обновляем категории
+                checkCategoryManagementAccess(); 
+                await loadCategories();
                 
-                // Перерисовываем активную вкладку, если это не dashboard
                 const activeTab = document.querySelector('.nav-tab.active');
                 if (activeTab) {
                     const activeTabName = activeTab.getAttribute('onclick').match(/switchTab\('(\w+)'\)/)[1];
                      if (activeTabName !== 'dashboard') {
-                        switchTab(activeTabName); // Вызовет нужную функцию отрисовки
+                        switchTab(activeTabName);
                     }
                 }
 
             } catch (error) {
                 console.error('❌ Критическая ошибка загрузки данных:', error);
-                // Можно показать более явное сообщение об ошибке пользователю
                 showAlert('Критическая ошибка: Не удалось загрузить основные данные. ' + error.message, 'error');
-            } finally {
-                 // Скрыть индикатор загрузки (опционально)
-                 // showLoadingIndicator(false);
             }
         }
 
@@ -1101,7 +968,7 @@
         // ============================================================================
 
         function updateDashboard() {
-            try { // Добавим try-catch для отладки
+            try { 
                 const log = allData.log || [];
                 const balances = allData.balances || [];
                 console.log('📊 Обновление Dashboard. Log:', log.length, 'Balances:', balances.length);
@@ -1112,10 +979,9 @@
                 let totalBalance = 0;
 
                 log.forEach(entry => {
-                    // Добавим проверку на тип entry
                     if (!Array.isArray(entry) || entry.length < 5) {
                         console.warn('Некорректная запись в логе:', entry);
-                        return; // Пропускаем некорректную запись
+                        return;
                     }
                     const amount = parseFloat(entry[4]) || 0;
                     const type = String(entry[2] || '');
@@ -1123,7 +989,7 @@
 
                     if (type === 'Расход') totalExpenses += amount;
                     if (type === 'Выдача') totalIssued += amount;
-                    if (status === 'Ожидает' && type === 'Запрос') pendingRequests++; // Уточним тип
+                    if (status === 'Ожидает' && type === 'Запрос') pendingRequests++;
                 });
 
                 balances.forEach(b => {
@@ -1146,7 +1012,7 @@
         }
 
         // ============================================================================
-        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (Без изменений)
+        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (submitReturnFunds УДАЛЕНА)
         // ============================================================================
 
         async function submitRequestFunds(event) {
@@ -1156,21 +1022,14 @@
             const amount = parseFloat(amountInput.value);
             const comment = commentInput.value;
 
-            if (!amount || amount <= 0) {
-                showAlert('Укажите корректную сумму', 'error');
-                amountInput.focus();
-                return;
-            }
-            if (!currentUserId) { // Добавим проверку
-                 showAlert('ID пользователя не определен. Обновите страницу.', 'error');
-                 return;
-            }
+            if (!amount || amount <= 0) { showAlert('Укажите корректную сумму', 'error'); amountInput.focus(); return; }
+            if (!currentUserId) { showAlert('ID пользователя не определен. Обновите страницу.', 'error'); return; }
 
             const payload = { userId: currentUserId, amount: amount, comment: comment };
             const submitButton = event.target.querySelector('button[type="submit"]');
 
             try {
-                submitButton.disabled = true; // Блокируем кнопку
+                submitButton.disabled = true; 
                 submitButton.textContent = 'Отправка...';
                 const result = await callApi('recordRequestFunds', payload);
                 if (result.success) {
@@ -1178,16 +1037,14 @@
                     closeModal('requestFundsModal');
                     amountInput.value = '';
                     commentInput.value = '';
-                    await loadData(); // Обновляем данные после успеха
+                    await loadData();
                 } else {
-                    // Ошибка, которую вернул бэкенд
                     showAlert('❌ Ошибка сервера: ' + (result.error || 'Неизвестная ошибка'), 'error');
                 }
             } catch (error) {
-                // Ошибка сети или другая ошибка callApi
                 showAlert('❌ Ошибка отправки запроса: ' + error.message, 'error');
             } finally {
-                 submitButton.disabled = false; // Разблокируем кнопку
+                 submitButton.disabled = false; 
                  submitButton.textContent = 'Отправить запрос';
             }
         }
@@ -1209,13 +1066,7 @@
             if (!subcategory) { showAlert('Выберите подкатегорию', 'error'); subcategorySelect.focus(); return; }
              if (!currentUserId) { showAlert('ID пользователя не определен. Обновите страницу.', 'error'); return; }
 
-            const payload = {
-                userId: currentUserId,
-                amount: amount,
-                category: category,
-                subcategory: subcategory,
-                comment: comment
-            };
+            const payload = { userId: currentUserId, amount: amount, category: category, subcategory: subcategory, comment: comment };
             const submitButton = event.target.querySelector('button[type="submit"]');
 
             try {
@@ -1227,7 +1078,7 @@
                     closeModal('recordExpenseModal');
                     amountInput.value = '';
                     categorySelect.value = '';
-                    subcategorySelect.innerHTML = '<option value="">Выберите подкатегорию...</option>'; // Очищаем подкатегории
+                    subcategorySelect.innerHTML = '<option value="">Выберите подкатегорию...</option>';
                     commentInput.value = '';
                     await loadData();
                 } else {
@@ -1262,7 +1113,6 @@
             try {
                  submitButton.disabled = true;
                  submitButton.textContent = 'Передача...';
-                // ⚠️ Убедитесь, что 'recordTransfer' обработан в Code.gs -> handleWebAppRequest
                 const result = await callApi('recordTransfer', payload); 
                 if (result.success) {
                     showAlert('✅ Средства переданы успешно!', 'success');
@@ -1282,39 +1132,9 @@
             }
         }
 
-        async function submitReturnFunds(event) {
-            event.preventDefault();
-            const amountInput = document.getElementById('returnAmount');
-            const commentInput = document.getElementById('returnComment');
-            const amount = parseFloat(amountInput.value);
-            const comment = commentInput.value;
-
-            if (!amount || amount <= 0) { showAlert('Укажите корректную сумму', 'error'); amountInput.focus(); return; }
-            if (!currentUserId) { showAlert('ID пользователя не определен. Обновите страницу.', 'error'); return; }
-
-            const payload = { userId: currentUserId, amount: amount, comment: comment };
-            const submitButton = event.target.querySelector('button[type="submit"]');
-
-            try {
-                 submitButton.disabled = true;
-                 submitButton.textContent = 'Возврат...';
-                const result = await callApi('recordReturn', payload);
-                if (result.success) {
-                    showAlert('✅ Возврат записан успешно!', 'success');
-                    closeModal('returnFundsModal');
-                    amountInput.value = '';
-                    commentInput.value = '';
-                    await loadData();
-                } else {
-                    showAlert('❌ Ошибка сервера: ' + (result.error || 'Неизвестная ошибка'), 'error');
-                }
-            } catch (error) {
-                showAlert('❌ Ошибка записи возврата: ' + error.message, 'error');
-            } finally {
-                 submitButton.disabled = false;
-                 submitButton.textContent = 'Вернуть средства';
-            }
-        }
+        /* * ИЗМЕНЕНИЕ:
+         * Функция submitReturnFunds УДАЛЕНА
+         */
 
         async function submitIssueFunds(event) {
             event.preventDefault();
@@ -1328,11 +1148,7 @@
 
             if (!toId) { showAlert('Выберите получателя', 'error'); toSelect.focus(); return; }
             if (!amount || amount <= 0) { showAlert('Укажите корректную сумму', 'error'); amountInput.focus(); return; }
-            // Добавим проверку роли - только Директор может выдавать? (Зависит от вашей логики)
-            // if (currentUserRole !== 'Директор') { showAlert('У вас нет прав для выдачи средств.', 'error'); return; }
 
-
-            // ⚠️ Убедитесь, что 'recordIssueFunds' обработан в Code.gs -> handleWebAppRequest
             const payload = { toId: toId, amount: amount, comment: comment };
             const submitButton = event.target.querySelector('button[type="submit"]');
 
@@ -1363,7 +1179,7 @@
         // ============================================================================
 
         function loadJournal() {
-            try { // Добавим try-catch
+            try {
                 const log = allData.log || [];
                 const tbody = document.getElementById('journalBody');
                 console.log('📰 Отрисовка журнала, записей:', log.length);
@@ -1374,28 +1190,26 @@
                 }
 
                 let html = '';
-                // Отрисовываем в обратном порядке - свежие сверху
                 for (let i = log.length - 1; i >= 0; i--) { 
                      const entry = log[i];
                      if (!Array.isArray(entry) || entry.length < 12) {
                         console.warn("Некорректная запись журнала:", entry);
-                        continue; // Пропускаем
+                        continue;
                      }
-                    // Используем try-catch внутри цикла, чтобы одна плохая строка не сломала все
                     try {
                         const date = entry[0] ? new Date(entry[0]).toLocaleDateString('ru-RU') : 'N/A';
                         const id = entry[1] || 'N/A';
                         const type = entry[2] || '?';
                         const status = entry[3] || '?';
-                        const amount = entry[4]; // Не парсим здесь, formatCurrency справится
+                        const amount = entry[4];
                         const fromId = entry[5] || '';
                         const toId = entry[6] || '';
-                        const category = entry[8] || ''; // Индекс 8 - Категория
-                        const subcategory = entry[9] || ''; // Индекс 9 - Подкатегория
-                        const comment = entry[11] || ''; // Индекс 11 - Комментарий
+                        const category = entry[8] || ''; 
+                        const subcategory = entry[9] || '';
+                        const comment = entry[11] || '';
 
                         const statusClass = status === 'Подтверждено' ? 'status-approved' : (status === 'Ожидает' ? 'status-pending' : 'status-rejected');
-                        const fromName = getNameById(fromId) || fromId; // Показываем ID, если имя не найдено
+                        const fromName = getNameById(fromId) || fromId;
                         const toName = getNameById(toId) || toId;
 
                         html += `
@@ -1414,7 +1228,7 @@
                     } catch (rowError) {
                          console.error("Ошибка обработки строки журнала:", rowError, entry);
                     }
-                } // end for
+                } 
 
                 tbody.innerHTML = html;
                  console.log('✅ Журнал отрисован.');
@@ -1426,15 +1240,12 @@
 
 
         function applyFilters() {
-             try { // Добавим try-catch
+             try {
                 const log = allData.log || [];
                 const dateFromValue = document.getElementById('filterDateFrom').value;
                 const dateToValue = document.getElementById('filterDateTo').value;
                 const type = document.getElementById('filterType').value;
                 const status = document.getElementById('filterStatus').value;
-
-                 // Парсим даты с учетом часового пояса пользователя
-                 // Устанавливаем время на начало дня для dateFrom и конец дня для dateTo
                 const dateFrom = dateFromValue ? new Date(dateFromValue + 'T00:00:00') : null;
                 const dateTo = dateToValue ? new Date(dateToValue + 'T23:59:59') : null;
 
@@ -1444,17 +1255,13 @@
                 let html = '';
                 let count = 0;
 
-                // Фильтруем в обратном порядке для показа свежих сверху
                 for (let i = log.length - 1; i >= 0; i--) {
                     const entry = log[i];
-                    if (!Array.isArray(entry) || entry.length < 12) continue; // Пропуск некорректных
+                    if (!Array.isArray(entry) || entry.length < 12) continue;
 
                     try {
-                        // Важно: Дату из Google Sheets нужно правильно парсить
-                        // new Date(entry[0]) может работать некорректно без указания формата/часового пояса
-                        // Лучше передавать дату как строку ISO или timestamp с сервера
                         const entryDate = entry[0] ? new Date(entry[0]) : null; 
-                        if (!entryDate) continue; // Пропуск записей без даты
+                        if (!entryDate) continue;
 
                         const entryType = String(entry[2] || '');
                         const entryStatus = String(entry[3] || '');
@@ -1497,7 +1304,7 @@
                     } catch (filterRowError) {
                         console.error("Ошибка обработки строки при фильтрации:", filterRowError, entry);
                     }
-                } // end for
+                }
 
                 tbody.innerHTML = html || `<tr><td colspan="9" class="empty-state">Нет данных по фильтрам (${count} найдено)</td></tr>`;
                  console.log(`✅ Фильтры применены, найдено ${count} записей.`);
@@ -1513,7 +1320,7 @@
             document.getElementById('filterDateTo').value = '';
             document.getElementById('filterType').value = '';
             document.getElementById('filterStatus').value = '';
-            loadJournal(); // Просто перерисовываем с полными данными
+            loadJournal();
              console.log('Фильтры сброшены.');
         }
 
@@ -1526,7 +1333,7 @@
         // ============================================================================
 
         function loadBalances() {
-            try { // Добавим try-catch
+            try {
                 const balances = allData.balances || [];
                 const container = document.getElementById('balancesList');
                  console.log('💵 Отрисовка балансов, записей:', balances.length);
@@ -1540,7 +1347,7 @@
                 balances.forEach(balance => {
                      if (!Array.isArray(balance) || balance.length < 3) {
                          console.warn("Некорректная запись баланса:", balance);
-                         return; // Пропускаем
+                         return;
                      }
                     const id = balance[0];
                     const name = balance[1] || 'Неизвестно';
@@ -1571,28 +1378,17 @@
         // АНАЛИТИКА (Без изменений)
         // ============================================================================
 
-        function loadAnalytics() {
-            // ... (код без изменений) ...
-        }
-
-        function displayCategoryChart(data) {
-            // ... (код без изменений) ...
-        }
-
-        function displayEmployeeChart(data) {
-            // ... (код без изменений) ...
-        }
-
-        function displayTrendChart(data) {
-            // ... (код без изменений) ...
-        }
+        function loadAnalytics() { /* ... */ }
+        function displayCategoryChart(data) { /* ... */ }
+        function displayEmployeeChart(data) { /* ... */ }
+        function displayTrendChart(data) { /* ... */ }
 
         // ============================================================================
         // ПОДТВЕРЖДЕНИЯ (Без изменений)
         // ============================================================================
 
         function loadApprovals() {
-            try { // Добавим try-catch
+            try {
                 const log = allData.log || [];
                 const tbody = document.getElementById('approvalsBody');
                  console.log('✅ Отрисовка подтверждений, записей в логе:', log.length);
@@ -1608,7 +1404,6 @@
                 }
 
                 let html = '';
-                // Сортируем по дате - свежие сверху
                 pendingRequests.sort((a,b) => new Date(b[0]) - new Date(a[0])); 
 
                 pendingRequests.forEach(entry => {
@@ -1652,7 +1447,6 @@
         async function approveRequest(requestId) {
             console.log(`👍 Попытка подтвердить запрос: ${requestId}`);
             const payload = { requestId: requestId };
-            // Найдем кнопку, чтобы временно заблокировать ее (опционально)
             const approveButton = document.querySelector(`button[onclick="approveRequest('${requestId}')"]`);
             const rejectButton = document.querySelector(`button[onclick="rejectRequest('${requestId}')"]`);
             
@@ -1663,23 +1457,21 @@
                 const result = await callApi('approveRequestWeb', payload);
                 if (result.success) {
                     showAlert('✅ Запрос подтвержден!', 'success');
-                    await loadData(); // Ждем полного обновления данных
+                    await loadData();
                     
-                    // Обновляем ТОЛЬКО список подтверждений, если вкладка активна
                     if (document.getElementById('approvals').classList.contains('active')) {
-                         loadApprovals(); // Перерисовываем список
+                         loadApprovals();
                     }
                 } else {
                     showAlert('❌ Ошибка сервера при подтверждении: ' + (result.error || 'Неизвестная ошибка'), 'error');
-                     if(approveButton) approveButton.disabled = false; // Разблокируем при ошибке
+                     if(approveButton) approveButton.disabled = false;
                      if(rejectButton) rejectButton.disabled = false;
                 }
             } catch (error) {
                 showAlert('❌ Ошибка сети при подтверждении: ' + error.message, 'error');
-                 if(approveButton) approveButton.disabled = false; // Разблокируем при ошибке
+                 if(approveButton) approveButton.disabled = false;
                  if(rejectButton) rejectButton.disabled = false;
             } 
-            // Кнопки удалятся при перерисовке loadApprovals, дополнительно разблокировать не нужно, если успех
         }
 
         async function rejectRequest(requestId) {
@@ -1705,7 +1497,8 @@
                     if(approveButton) approveButton.disabled = false; 
                     if(rejectButton) rejectButton.disabled = false;
                 }
-            } catch (error) {
+            } catch (error)
+             {
                 showAlert('❌ Ошибка сети при отклонении: ' + error.message, 'error');
                  if(approveButton) approveButton.disabled = false; 
                  if(rejectButton) rejectButton.disabled = false;
@@ -1732,35 +1525,33 @@
         // ============================================================================
 
         function getNameById(id) {
-            if (!id) return ''; // Возвращаем пустую строку, если ID нет
+            if (!id) return '';
             const admin = allData.admin || [];
             for (let i = 0; i < admin.length; i++) {
-                 // Сравниваем как строки
                 if (Array.isArray(admin[i]) && String(admin[i][0]).trim() === String(id).trim()) {
-                    return admin[i][2] || `ID:${id}`; // Возвращаем имя или ID, если имя пустое
+                    return admin[i][2] || `ID:${id}`;
                 }
             }
-            return `ID:${id}`; // Возвращаем ID, если не найден в списке
+            return `ID:${id}`;
         }
 
 
         function formatCurrency(value) {
             const number = parseFloat(value);
             if (isNaN(number)) {
-                // console.warn("Не удалось отформатировать валюту:", value);
-                return 'N/A '; // Возвращаем N/A если не число
+                return 'N/A ';
             }
             return new Intl.NumberFormat('ru-RU', {
                 style: 'currency',
                 currency: 'RUB',
                 minimumFractionDigits: 0,
-                maximumFractionDigits: 2 // Показывать копейки, если они есть
+                maximumFractionDigits: 2
             }).format(number);
         }
 
 
         function populateSelects() {
-            try { // Добавим try-catch
+            try {
                 const admin = allData.admin || [];
                  console.log('👥 Заполнение select-ов сотрудниками:', admin.length);
                 let optionsHtml = '<option value="">Выберите сотрудника...</option>';
@@ -1769,13 +1560,12 @@
                 admin.forEach(person => {
                     if (!Array.isArray(person) || person.length < 4) {
                          console.warn("Некорректная запись сотрудника:", person);
-                         return; // Пропускаем
+                         return;
                     }
                     const id = String(person[0]).trim();
-                    const name = person[2] || `ID:${id}`; // Используем ID если имя пустое
+                    const name = person[2] || `ID:${id}`;
                     const status = String(person[3] || '').trim().toLowerCase();
 
-                    // Добавляем только активных и не текущего пользователя (для transferTo)
                     if (status === 'active') {
                         optionsHtml += `<option value="${id}">${name}</option>`;
                         count++;
@@ -1786,7 +1576,7 @@
                 const issueSelect = document.getElementById('issueTo');
                 
                 if(transferSelect) transferSelect.innerHTML = optionsHtml;
-                if(issueSelect) issueSelect.innerHTML = optionsHtml; // Используем тот же список для выдачи
+                if(issueSelect) issueSelect.innerHTML = optionsHtml;
 
                 console.log(`✅ Select-ы заполнены ${count} активными сотрудниками.`);
             } catch(e) {
@@ -1799,44 +1589,41 @@
         async function loadCategories() {
             console.log('📁 Загрузка категорий...');
             try {
-                // Результат callApi уже будет объектом { category: [sub1, sub2], ... }
                 const categories = await callApi('getAllCategories'); 
                 console.log('✅ Категории получены от API:', categories);
                 
-                // Проверяем, что это объект
                 if (typeof categories === 'object' && categories !== null) {
                     categoriesData = categories;
                     updateCategorySelect();
                 } else {
                     console.error('❌ Получен некорректный формат категорий:', categories);
-                    categoriesData = {}; // Сбрасываем в пустой объект
-                    updateCategorySelect(); // Обновляем с пустым списком
+                    categoriesData = {};
+                    updateCategorySelect();
                     showAlert('Ошибка: Не удалось загрузить категории в правильном формате.', 'error');
                 }
                 
             } catch (error) {
                 console.error('❌ Ошибка загрузки категорий:', error);
                 showAlert('❌ Ошибка загрузки категорий: ' + error.message, 'error');
-                 categoriesData = {}; // Сбрасываем при ошибке
-                 updateCategorySelect(); // Обновляем с пустым списком
+                 categoriesData = {};
+                 updateCategorySelect();
             }
         }
 
         function updateCategorySelect() {
-            try { // Добавим try-catch
+            try {
                 const select = document.getElementById('expenseCategory');
-                if (!select) return; // Если элемента нет, выходим
+                if (!select) return;
 
                 let optionsHtml = '<option value="">Выберите категорию...</option>';
                 const categoryKeys = Object.keys(categoriesData || {});
                 console.log('🔄 Обновление select категорий. Ключи:', categoryKeys);
 
-                categoryKeys.sort().forEach(category => { // Сортируем для удобства
+                categoryKeys.sort().forEach(category => {
                     optionsHtml += `<option value="${category}">${category}</option>`;
                 });
 
                 select.innerHTML = optionsHtml;
-                // Сбрасываем подкатегории при обновлении категорий
                 updateSubcategories(); 
                 console.log('✅ Select категорий обновлен.');
             } catch(e) {
@@ -1847,17 +1634,17 @@
 
 
         function updateSubcategories() {
-             try { // Добавим try-catch
+             try {
                 const categorySelect = document.getElementById('expenseCategory');
                 const subcategorySelect = document.getElementById('expenseSubcategory');
-                if (!categorySelect || !subcategorySelect) return; // Если элементов нет, выходим
+                if (!categorySelect || !subcategorySelect) return;
 
                 const selectedCategory = categorySelect.value;
                 let optionsHtml = '<option value="">Выберите подкатегорию...</option>';
                 console.log(`🔄 Обновление подкатегорий для "${selectedCategory}"`);
 
                 if (selectedCategory && categoriesData && Array.isArray(categoriesData[selectedCategory])) {
-                    categoriesData[selectedCategory].sort().forEach(subcategory => { // Сортируем
+                    categoriesData[selectedCategory].sort().forEach(subcategory => {
                         optionsHtml += `<option value="${subcategory}">${subcategory}</option>`;
                     });
                 }
@@ -1871,22 +1658,19 @@
         }
 
 
-        /**
-         * ============================================================================
-         * (Логика скрытия кнопки "Выдать средства" осталась без изменений)
-         * ============================================================================
+        /* * Функция управления правами (Без изменений, 
+         * логика скрытия 'issueFundsCard' сохранена)
          */
         function checkCategoryManagementAccess() {
-            // Эта функция теперь вызывается после загрузки данных в loadData()
             const admin = allData.admin || [];
             let roleFound = false;
-            currentUserRole = 'Не авторизован'; // Роль по умолчанию
+            currentUserRole = 'Не авторизован';
             
             console.log(`🔐 Проверка прав доступа для ID: ${currentUserId}`);
 
             for (let i = 0; i < admin.length; i++) {
                 if (Array.isArray(admin[i]) && String(admin[i][0]).trim() === String(currentUserId).trim()) {
-                    currentUserRole = admin[i][1] || 'Не определена'; // Нашли роль
+                    currentUserRole = admin[i][1] || 'Не определена';
                     roleFound = true;
                     console.log(`👤 Роль найдена: ${currentUserRole}`);
                     break;
@@ -1896,33 +1680,27 @@
                  console.warn(`👤 Роль для ID ${currentUserId} не найдена в списке Admin.`);
             }
 
-            // Обновляем роль в Header
             const userRoleSpan = document.getElementById('userRole');
             if(userRoleSpan) userRoleSpan.textContent = 'Роль: ' + currentUserRole;
 
-            // Показываем/скрываем кнопку добавления категории
-            const allowedRoles = ['Директор', 'Бухгалтер', 'Ответственный']; // Роли, которым можно добавлять
+            // Управление кнопкой "Добавить категорию"
+            const allowedRoles = ['Директор', 'Бухгалтер', 'Ответственный'];
             const addBtn = document.getElementById('addCategoryBtn');
             if (addBtn) {
                  const canAdd = allowedRoles.includes(currentUserRole);
-                 addBtn.style.display = canAdd ? 'inline-block' : 'none'; // Используем inline-block для кнопки
+                 addBtn.style.display = canAdd ? 'inline-block' : 'none';
                  console.log(`🔧 Кнопка добавления категории ${canAdd ? 'показана' : 'скрыта'}.`);
             }
             
-            // ===================================================================
-            // НОВЫЙ КОД: Показываем/скрываем кнопку "Выдать средства"
-            // ===================================================================
+            // Управление кнопкой "Выдать средства"
             const issueFundsCard = document.getElementById('issueFundsCard');
             if (issueFundsCard) {
-                // Роли, которые могут ВИДЕТЬ кнопку (все, КРОМЕ Ответственного и Сотрудника)
-                const canIssueRoles = ['Директор', 'Бухгалтер']; // Явные роли, которые могут
+                const canIssueRoles = ['Директор', 'Бухгалтер'];
                 const canIssue = canIssueRoles.includes(currentUserRole);
                 
-                // .action-card является grid-item, поэтому 'block' подходит
                 issueFundsCard.style.display = canIssue ? 'block' : 'none'; 
                 console.log(`🔧 Кнопка "Выдать средства" ${canIssue ? 'показана' : 'скрыта'} для роли: ${currentUserRole}.`);
             }
-            // ===================================================================
         }
 
 
@@ -1951,7 +1729,7 @@
                     closeModal('addCategoryModal');
                     categoryInput.value = '';
                     subcategoryInput.value = '';
-                    await loadCategories(); // Перезагружаем список категорий с сервера
+                    await loadCategories();
                 } else {
                     showAlert(`❌ Ошибка добавления: ${result.error || 'Неизвестная ошибка'}`, 'error');
                 }
@@ -1967,9 +1745,8 @@
         function showAlert(message, type = 'info') {
             const alertId = type + 'Alert';
             const alertElement = document.getElementById(alertId);
-            if (!alertElement) return; // Выходим, если элемент не найден
+            if (!alertElement) return;
 
-            // Удаляем предыдущий таймер, если он есть
             if (alertElement.timerId) {
                 clearTimeout(alertElement.timerId);
             }
@@ -1977,39 +1754,16 @@
             alertElement.textContent = message;
             alertElement.classList.add('active');
 
-            // Устанавливаем новый таймер
             alertElement.timerId = setTimeout(() => {
                 alertElement.classList.remove('active');
-                alertElement.timerId = null; // Сбрасываем таймер
-            }, 5000); // Показываем 5 секунд
+                alertElement.timerId = null;
+            }, 5000);
         }
 
         // ============================================================================
-        // ТЕМА, САЙДБАР И ЗАКРЫТИЕ МОДАЛЕЙ (Добавлены toggleSidebar и applySidebarState)
+        // ТЕМА И ЗАКРЫТИЕ МОДАЛЕЙ (Без изменений)
         // ============================================================================
         
-        /**
-         * ИЗМЕНЕНИЕ: Новая функция для переключения сайдбара
-         */
-        function toggleSidebar() {
-            const body = document.body;
-            body.classList.toggle('sidebar-collapsed');
-            // Сохраняем состояние в localStorage
-            isSidebarCollapsed = body.classList.contains('sidebar-collapsed');
-            localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
-            console.log(`🗂️ Сайдбар ${isSidebarCollapsed ? 'свернут' : 'развернут'}`);
-        }
-
-        /**
-         * ИЗМЕНЕНИЕ: Новая функция для применения состояния сайдбара при загрузке
-         */
-        function applySidebarState() {
-             if (isSidebarCollapsed) {
-                 document.body.classList.add('sidebar-collapsed');
-             }
-             console.log(`🗂️ Состояние сайдбара применено: ${isSidebarCollapsed ? 'Collapsed' : 'Expanded'}`);
-        }
-
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', currentTheme);
@@ -2027,7 +1781,6 @@
                 document.body.classList.remove('dark-theme');
             }
              console.log(`🎨 Тема применена: ${theme}`);
-             // Обновляем текст кнопки при начальной загрузке
              const themeToggleButton = document.querySelector('.theme-toggle');
              if(themeToggleButton) {
                 themeToggleButton.textContent = theme === 'light' ? '🌙 Темная тема' : '☀️ Светлая тема';
@@ -2037,7 +1790,6 @@
         // Закрыть модал при клике на фон
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
-                // Закрываем все активные модальные окна
                 document.querySelectorAll('.modal.active').forEach(modal => {
                     modal.classList.remove('active');
                 });
