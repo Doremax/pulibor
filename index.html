@@ -9,13 +9,13 @@
         /* ОСНОВНЫЕ СТИЛИ МАКЕТА (ИЗМЕНЕНО) */
         /* ============================================================================ */
         :root {
-            /* ИЗМЕНЕНИЕ: Возвращаем переменные безопасных зон */
+            /* Переменные безопасных зон */
             --safe-area-top: env(safe-area-inset-top, 0px);
             --safe-area-bottom: env(safe-area-inset-bottom, 0px);
             
             --header-height: 60px;
             --bottom-nav-height: 60px;
-            --sidebar-width: 280px; /* Ширина бокового меню */
+            --sidebar-width: 280px; 
         }
 
         * {
@@ -32,9 +32,8 @@
         }
         
         .content-wrapper {
-             /* ИЗМЕНЕНИЕ: Отступ сверху теперь учитывает "челку" */
              padding-top: calc(var(--header-height) + var(--safe-area-top));
-             /* Отступ снизу управляется JS */
+             /* padding-bottom будет управляться JS в зависимости от роли */
              padding-bottom: 0; 
         }
 
@@ -53,7 +52,7 @@
             color: white;
             padding: 0 15px;
             display: flex;
-            justify-content: space-between; /* Изменено для гамбургера */
+            justify-content: center; /* Центрируем заголовок по умолчанию */
             align-items: center;
             
             position: fixed;
@@ -66,38 +65,20 @@
             padding-top: var(--safe-area-top);
             
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: width 0.3s ease, margin-left 0.3s ease; /* Для десктоп-версии Директора */
-        }
-
-        /* НОВОЕ: Кнопка "Гамбургер" для Директора на мобильных */
-        .hamburger-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-            padding: 10px;
-            line-height: 1;
-            display: none; /* Скрыта по умолчанию */
-            z-index: 1;
         }
 
         .header h1 {
             font-size: 20px;
             font-weight: 600;
-            /* Центрирование */
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
         
-        /* НОВОЕ: Спейсер для выравнивания гамбургера */
+        /* Спейсер (пустышка) для выравнивания */
         .header-spacer {
-            width: 40px; /* Равно ширине гамбургера */
+            width: 40px;
         }
 
         /* ============================================================================ */
-        /* БОКОВОЕ МЕНЮ (SIDEBAR) (ИЗМЕНЕНО) */
+        /* БОКОВОЕ МЕНЮ (SIDEBAR) (Выезд справа) */
         /* ============================================================================ */
         .sidebar {
             position: fixed;
@@ -215,7 +196,7 @@
         }
 
         /* ============================================================================ */
-        /* НИЖНЕЕ МЕНЮ (BOTTOM NAV) (ИЗМЕНЕНО) */
+        /* НИЖНЕЕ МЕНЮ (BOTTOM NAV) */
         /* ============================================================================ */
         .bottom-nav {
             position: fixed;
@@ -254,54 +235,15 @@
             font-size: 24px;
             margin-bottom: 2px;
         }
+        
+        /* ============================================================================ */
+        /* СТИЛИ ДЛЯ ДЕСКТОП-ВЕРСИИ (УДАЛЕНЫ) */
+        /* ============================================================================ */
+        /* Логика .director-desktop удалена, все используют мобильный вид */
+
 
         /* ============================================================================ */
-        /* НОВОЕ: СТИЛИ ДЛЯ ДЕСКТОП-ВЕРСИИ ДИРЕКТОРА */
-        /* ============================================================================ */
-        @media (min-width: 768px) {
-            /* Этот класс .director-desktop добавляется/убирается через JS */
-            
-            /* Закрепляем sidebar слева */
-            body.director-desktop .sidebar {
-                transform: translateX(0); /* Показываем */
-                left: 0; /* Ставим слева */
-                right: auto;
-                box-shadow: 4px 0 15px rgba(0,0,0,0.1); /* Тень справа */
-            }
-            
-            /* Убираем индикатор "активно" справа */
-            body.director-desktop .nav-tab {
-                 border-right: none;
-                 border-left: 4px solid transparent;
-            }
-             body.director-desktop .nav-tab.active {
-                 border-left-color: #667eea;
-             }
-            
-            /* Сдвигаем контент */
-            body.director-desktop .content-wrapper {
-                margin-left: var(--sidebar-width);
-            }
-            
-            /* Сдвигаем шапку */
-            body.director-desktop .header {
-                width: calc(100% - var(--sidebar-width));
-                margin-left: var(--sidebar-width);
-            }
-            
-            /* Прячем оверлей */
-            body.director-desktop .sidebar-overlay {
-                display: none;
-            }
-            
-            /* Прячем гамбургер в шапке */
-            body.director-desktop .hamburger-btn {
-                display: none !important; /* Важно, чтобы перебить JS */
-            }
-        }
-
-        /* ============================================================================ */
-        /* СТИЛИ ТЕМНОЙ ТЕМЫ (ИЗМЕНЕНО) */
+        /* СТИЛИ ТЕМНОЙ ТЕМЫ */
         /* ============================================================================ */
         
         body.dark-theme {
@@ -347,7 +289,10 @@
             background: #16213e;
         }
 
-        /* ... (Все остальные стили .content, .card, .form-group и т.д. остаются БЕЗ ИЗМЕНЕНИЙ) ... */
+        /* ============================================================================ */
+        /* СУЩЕСТВУЮЩИЕ СТИЛИ (Без изменений) */
+        /* ============================================================================ */
+        
         .content {
             padding: 20px;
             display: none;
@@ -870,9 +815,7 @@
     </style>
 </head>
 <body class=""> <div class="header">
-        <button class="hamburger-btn" id="headerHamburger" onclick="openSidebar()">☰</button>
         <h1 id="headerTitle">Загрузка...</h1>
-        <div class="header-spacer"></div>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -890,6 +833,9 @@
             <button class="nav-tab" id="nav-received" onclick="switchTab('received')" style="display: none;"><span class="icon">💰</span> <span>Получено</span></button>
             
             <button class="nav-tab" id="nav-journal" onclick="switchTab('journal')"><span class="icon">📄</span> <span>Журнал</span></button>
+            
+            <button class="nav-tab" id="nav-transfers" onclick="switchTab('transfers')" style="display: none;"><span class="icon">➡️</span> <span>Входящие</span></button>
+            
             <button class="nav-tab" id="nav-balances" onclick="switchTab('balances')"><span class="icon">🏦</span> <span>Балансы</span></button>
             <button class="nav-tab" id="nav-analytics" onclick="switchTab('analytics')"><span class="icon">📈</span> <span>Аналитика</span></button>
             <button class="nav-tab" id="nav-approvals" onclick="switchTab('approvals')"><span class="icon">✅</span> <span>Подтверждения</span></button>
@@ -958,7 +904,7 @@
                     <div class="action-card primary" onclick="openModal('requestFundsModal')" style="cursor: pointer;">
                         <div class="action-card-icon">📥</div>
                         <div class="action-card-title">Запросить средства</div>
-                        <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Запросить денежные средства у Директора</p>
+                        <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Запросить денежные средства</p>
                     </div>
                     <div class="action-card success" onclick="openModal('recordExpenseModal')" style="cursor: pointer;">
                         <div class="action-card-icon">💸</div>
@@ -1036,6 +982,14 @@
                     </table>
                 </div>
             </div>
+
+            <div id="transfers" class="content">
+                <h2 style="margin-bottom: 20px;">➡️ Входящие переводы</h2>
+                <div class="empty-state">
+                    <div class="loading"><div class="spinner"></div><p>Загрузка данных...</p></div>
+                </div>
+            </div>
+
             <div id="balances" class="content">
                 <h2 style="margin-bottom: 20px;">💵 Балансы сотрудников</h2>
                 <div class="balance-list" id="balancesList">
@@ -1093,8 +1047,7 @@
                             <tr>
                                 <th>Дата</th>
                                 <th>ID</th>
-                                <th>От кого</th>
-                                <th>Сумма</th>
+                                <th>От кого</th> <th>Сумма</th>
                                 <th>Статус</th>
                                 <th>Комментарий</th>
                                 <th>Действие</th>
@@ -1380,12 +1333,12 @@
             tabs.forEach(t => t.classList.remove('active'));
 
             const activeContent = document.getElementById(tabName);
-            // ИЗМЕНЕНИЕ: Находим кнопку по ID, так как 'balances' есть и в bottom-nav
             const activeTab = document.getElementById('nav-' + tabName);
 
             if (activeContent) activeContent.classList.add('active');
             if (activeTab) activeTab.classList.add('active');
-
+            
+            // ИЗМЕНЕНИЕ: Добавлена логика для новых вкладок
             if (tabName === 'journal') {
                 loadJournal(); 
             } else if (tabName === 'balances') {
@@ -1394,15 +1347,17 @@
                 loadAnalytics(); 
             } else if (tabName === 'approvals') {
                 loadApprovals(); 
-            } else if (tabName === 'received') { // НОВОЕ
+            } else if (tabName === 'received') { 
                 loadReceivedMoney();
+            } else if (tabName === 'transfers') { 
+                loadPendingTransfers();
             }
 
             closeSidebar();
         }
 
         // ============================================================================
-        // ЗАГРУЗКА ДАННЫХ (Без изменений)
+        // ЗАГРУЗКА ДАННЫХ (ИЗМЕНЕНО)
         // ============================================================================
 
         async function loadData() {
@@ -1425,15 +1380,16 @@
                 
                 const activeTab = document.querySelector('.nav-tab.active');
                 if (activeTab) {
-                    // ИЗМЕНЕНИЕ: Получаем имя вкладки из ID
                     const activeTabName = activeTab.id.replace('nav-', '');
                      if (activeTabName !== 'dashboard') {
-                        // Вызываем функцию отрисовки
+                        // Динамический вызов функции отрисовки
                         const loadFunction = 'load' + activeTabName.charAt(0).toUpperCase() + activeTabName.slice(1);
                         if (typeof window[loadFunction] === 'function') {
                             window[loadFunction]();
                         } else if (activeTabName === 'received') {
                             loadReceivedMoney();
+                        } else if (activeTabName === 'transfers') {
+                            loadPendingTransfers();
                         }
                     }
                 }
@@ -1470,6 +1426,7 @@
 
                     if (type === 'Расход') totalExpenses += amount;
                     if (type === 'Выдача') totalIssued += amount;
+                    // ИЗМЕНЕНИЕ: Считаем только 'Запрос'
                     if (status === 'Ожидает' && type === 'Запрос') pendingRequests++;
                 });
 
@@ -1493,10 +1450,11 @@
         }
 
         // ============================================================================
-        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (Логика "Вернуть" и "Выдать" удалена)
+        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (ИЗМЕНЕНО)
         // ============================================================================
 
         async function submitRequestFunds(event) {
+            // ... (Логика без изменений) ...
             event.preventDefault();
             const amountInput = document.getElementById('requestAmount');
             const commentInput = document.getElementById('requestComment');
@@ -1538,6 +1496,7 @@
         }
 
         async function submitRecordExpense(event) {
+            // ... (Логика без изменений) ...
             event.preventDefault();
             const amountInput = document.getElementById('expenseAmount');
             const categorySelect = document.getElementById('expenseCategory');
@@ -1587,6 +1546,7 @@
         }
 
         async function submitTransferFunds(event) {
+            // ИЗМЕНЕНИЕ: (Goal 4) Меняем сообщение
             event.preventDefault();
             const toSelect = document.getElementById('transferTo');
             const amountInput = document.getElementById('transferAmount');
@@ -1606,20 +1566,21 @@
 
             try {
                  submitButton.disabled = true;
-                 submitButton.textContent = 'Передача...';
+                 submitButton.textContent = 'Отправка...';
                 const result = await callApi('recordTransfer', payload); 
                 if (result.success) {
-                    showAlert('✅ Средства переданы успешно!', 'success');
+                    // ИЗМЕНЕНИЕ: Сообщение о том, что создан запрос
+                    showAlert('✅ Запрос на передачу отправлен. Получатель должен подтвердить.', 'info');
                     closeModal('transferFundsModal');
                     toSelect.value = '';
                     amountInput.value = '';
                     commentInput.value = '';
                     await loadData();
                 } else {
-                    showAlert('❌ Ошибка сервера: ' + (result.error || 'Не удалось передать средства'), 'error');
+                    showAlert('❌ Ошибка сервера: ' + (result.error || 'Не удалось отправить перевод'), 'error');
                 }
             } catch (error) {
-                showAlert('❌ Ошибка передачи средств: ' + error.message, 'error');
+                showAlert('❌ Ошибка отправки перевода: ' + error.message, 'error');
             } finally {
                  submitButton.disabled = false;
                  submitButton.textContent = 'Передать средства';
@@ -1827,7 +1788,7 @@
         }
 
         // ============================================================================
-        // НОВОЕ: ФУНКЦИЯ ДЛЯ ВКЛАДКИ "ПОЛУЧЕНО"
+        // НОВОЕ: ФУНКЦИЯ ДЛЯ ВКЛАДКИ "ПОЛУЧЕНО" (Goal 2)
         // ============================================================================
         
         function loadReceivedMoney() {
@@ -1864,7 +1825,7 @@
 
                 console.log(`✅ Получено в этом месяце: ${totalReceived}`);
                 
-                // Рендерим в .container (аналогично .dashboard)
+                // Рендерим в .container
                 container.innerHTML = `
                     <h2 style="margin-bottom: 20px;">💰 Получено в этом месяце</h2>
                     <div class="cards-grid">
@@ -1883,10 +1844,149 @@
                  container.innerHTML = '<div class="empty-state">Ошибка загрузки данных.</div>';
             }
         }
+        
+        // ============================================================================
+        // НОВОЕ: ФУНКЦИЯ ДЛЯ ВКЛАДКИ "ВХОДЯЩИЕ" (Goal 4)
+        // ============================================================================
+        
+        function loadPendingTransfers() {
+            const container = document.getElementById('transfers');
+            if (!container) return;
+            console.log('➡️ Загрузка входящих переводов...');
+            
+            try {
+                const log = allData.log || [];
+                
+                const pendingTransfers = log.filter(entry => 
+                    Array.isArray(entry) && entry.length > 12 &&
+                    entry[2] === 'Передача' && 
+                    entry[3] === 'Ожидает' &&
+                    String(entry[6] || '') === currentUserId // Where To ID == me
+                );
+
+                if (pendingTransfers.length === 0) {
+                    container.innerHTML = `
+                        <h2 style="margin-bottom: 20px;">➡️ Входящие переводы</h2>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📬</div>
+                            <div class="empty-state-text">Нет ожидающих переводов</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <h2 style="margin-bottom: 20px;">➡️ Входящие переводы</h2>
+                    <div class="table-container">
+                        <table id="pendingTransfersTable">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>ID</th>
+                                    <th>От кого</th>
+                                    <th>Сумма</th>
+                                    <th>Комментарий</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                pendingTransfers.sort((a,b) => new Date(b[0]) - new Date(a[0])); // Свежие сверху
+
+                pendingTransfers.forEach(entry => {
+                    const transferId = entry[1] || 'N/A';
+                    const fromId = String(entry[5] || '');
+                    const fromName = getNameById(fromId);
+                    const amount = entry[4];
+                    const date = entry[0] ? new Date(entry[0]).toLocaleDateString('ru-RU') : 'N/A';
+                    const comment = entry[11] || '';
+
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td><code>${transferId}</code></td>
+                            <td>${fromName}</td>
+                            <td>${formatCurrency(amount)}</td>
+                            <td>${comment}</td>
+                            <td>
+                                <button class="btn btn-success btn-small" onclick="approveTransfer('${transferId}')">🤝 Принять</button>
+                                <button class="btn btn-danger btn-small" onclick="rejectTransfer('${transferId}')">⛔ Отклонить</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table></div>`;
+                container.innerHTML = html;
+                
+            } catch(e) {
+                 console.error("❌ Ошибка отрисовки входящих переводов:", e);
+                 container.innerHTML = '<div class="empty-state">Ошибка загрузки данных.</div>';
+            }
+        }
+        
+        // НОВОЕ: (Goal 4) Функции подтверждения/отклонения перевода
+        async function approveTransfer(transferId) {
+            console.log(`🤝 Попытка принять перевод: ${transferId}`);
+            const payload = { transferId: transferId, userId: currentUserId };
+            // Блокируем кнопки
+            const approveButton = document.querySelector(`button[onclick="approveTransfer('${transferId}')"]`);
+            const rejectButton = document.querySelector(`button[onclick="rejectTransfer('${transferId}')"]`);
+
+            try {
+                if(approveButton) approveButton.disabled = true;
+                if(rejectButton) rejectButton.disabled = true;
+
+                // ⚠️ ВАЖНО: 'approveTransfer' должен быть создан в Google Apps Script!
+                const result = await callApi('approveTransfer', payload);
+                if (result.success) {
+                    showAlert('✅ Перевод принят!', 'success');
+                    await loadData(); // Обновляем все данные
+                    loadPendingTransfers(); // Перерисовываем список
+                } else {
+                    showAlert('❌ Ошибка сервера: ' + (result.error || 'Неизвестная ошибка'), 'error');
+                    if(approveButton) approveButton.disabled = false;
+                    if(rejectButton) rejectButton.disabled = false;
+                }
+            } catch (error) {
+                showAlert('❌ Ошибка сети: ' + error.message, 'error');
+                if(approveButton) approveButton.disabled = false;
+                if(rejectButton) rejectButton.disabled = false;
+            }
+        }
+        
+        async function rejectTransfer(transferId) {
+            console.log(`⛔ Попытка отклонить перевод: ${transferId}`);
+            const payload = { transferId: transferId, userId: currentUserId };
+            const approveButton = document.querySelector(`button[onclick="approveTransfer('${transferId}')"]`);
+            const rejectButton = document.querySelector(`button[onclick="rejectTransfer('${transferId}')"]`);
+
+            try {
+                if(approveButton) approveButton.disabled = true;
+                if(rejectButton) rejectButton.disabled = true;
+
+                // ⚠️ ВАЖНО: 'rejectTransfer' должен быть создан в Google Apps Script!
+                const result = await callApi('rejectTransfer', payload);
+                if (result.success) {
+                    showAlert('✅ Перевод отклонен!', 'success');
+                    await loadData(); 
+                    loadPendingTransfers();
+                } else {
+                    showAlert('❌ Ошибка сервера: ' + (result.error || 'Неизвестная ошибка'), 'error');
+                    if(approveButton) approveButton.disabled = false;
+                    if(rejectButton) rejectButton.disabled = false;
+                }
+            } catch (error) {
+                showAlert('❌ Ошибка сети: ' + error.message, 'error');
+                if(approveButton) approveButton.disabled = false;
+                if(rejectButton) rejectButton.disabled = false;
+            }
+        }
 
 
         // ============================================================================
-        // АНАЛИТИКА (ИЗМЕНЕНО)
+        // АНАЛИТИКА (ИЗМЕНЕНО) (Goal 1)
         // ============================================================================
 
         function loadAnalytics() {
@@ -1914,8 +2014,7 @@
 
             console.log('📈 Загрузка аналитики (заглушка):', { period, months, employeeId: finalEmployeeId });
 
-            // TODO: Ваша логика фильтрации (используя finalEmployeeId) и группировки данных
-            // на основе allData.log, period, months, и finalEmployeeId
+            // TODO: Ваша логика фильтрации (используя finalEmployeeId)
            
             displayCategoryChart({});
             displayEmployeeChart({});
@@ -1935,59 +2034,87 @@
         }
 
         // ============================================================================
-        // ПОДТВЕРЖДЕНИЯ (Без изменений)
+        // ПОДТВЕРЖДЕНИЯ (ИЗМЕНЕНО) (Goal 2, 3)
         // ============================================================================
 
+        // НОВЫЙ ХЕЛПЕР
+        function getRoleById(id) {
+            const admin = allData.admin || [];
+            for (let i = 0; i < admin.length; i++) {
+                if (Array.isArray(admin[i]) && String(admin[i][0]).trim() === String(id).trim()) {
+                    return admin[i][1] || 'Не определена'; // Return role name
+                }
+            }
+            return 'Неизвестно';
+        }
+
+        // ПОЛНОСТЬЮ ПЕРЕПИСАНА
         function loadApprovals() {
             try { 
                 const log = allData.log || [];
                 const tbody = document.getElementById('approvalsBody');
-                 console.log('✅ Отрисовка подтверждений, записей в логе:', log.length);
-
+                
                 const pendingRequests = log.filter(entry => 
-                    Array.isArray(entry) && entry.length > 3 && entry[2] === 'Запрос' && entry[3] === 'Ожидает'
+                    Array.isArray(entry) && entry.length > 12 && // Убедимся, что запись полная
+                    entry[2] === 'Запрос' && 
+                    entry[3] === 'Ожидает'
                 );
-                console.log('⏳ Найдено ожидающих запросов:', pendingRequests.length);
-
-                if (pendingRequests.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет ожидающих запросов</td></tr>';
-                    return;
-                }
-
+                
                 let html = '';
-                pendingRequests.sort((a,b) => new Date(b[0]) - new Date(a[0])); 
+                let count = 0;
 
                 pendingRequests.forEach(entry => {
-                    try {
-                        const date = entry[0] ? new Date(entry[0]).toLocaleDateString('ru-RU') : 'N/A';
-                        const id = entry[1] || 'N/A';
-                        const fromId = entry[5] || '';
-                        const fromName = getNameById(fromId) || fromId;
-                        const amount = entry[4];
-                        const status = entry[3];
-                        const comment = entry[11] || '';
+                    const requestId = entry[1] || 'N/A';
+                    const requesterId = String(entry[5] || '');
+                    const requesterRole = getRoleById(requesterId);
+                    const requesterName = getNameById(requesterId);
+                    const amount = entry[4];
+                    const date = entry[0] ? new Date(entry[0]).toLocaleDateString('ru-RU') : 'N/A';
+                    const comment = entry[11] || '';
+
+                    let showRequest = false;
+                    
+                    // Goal 2 & 3: Логика фильтрации
+                    if (currentUserRole === 'Ответственный' && requesterRole === 'Сотрудник') {
+                        showRequest = true;
+                    } else if ((currentUserRole === 'Директор' || currentUserRole === 'Бухгалтер') && requesterRole === 'Ответственный') {
+                        showRequest = true;
+                    }
+
+                    if (showRequest) {
+                        count++;
+                        let actionButtons = '';
+                        
+                        // Goal 3: Проверка на само-подтверждение
+                        if (requesterId === currentUserId) {
+                            actionButtons = '<i>(Ваш запрос)</i>'; // Нельзя подтвердить свой же запрос
+                        } else {
+                            actionButtons = `
+                                <button class="btn btn-success btn-small" onclick="approveRequest('${requestId}')">✅ Подтвердить</button>
+                                <button class="btn btn-danger btn-small" onclick="rejectRequest('${requestId}')">❌ Отклонить</button>
+                            `;
+                        }
 
                         html += `
                             <tr>
                                 <td>${date}</td>
-                                <td><code>${id}</code></td>
-                                <td>${fromName}</td>
-                                <td>${formatCurrency(amount)}</td>
-                                <td><span class="status-badge status-pending">${status}</span></td>
+                                <td><code>${requestId}</code></td>
+                                <td>${requesterName} (${requesterRole})</td> <td>${formatCurrency(amount)}</td>
+                                <td><span class="status-badge status-pending">Ожидает</span></td>
                                 <td>${comment}</td>
-                                <td>
-                                    <button class="btn btn-success btn-small" onclick="approveRequest('${id}')">✅ Подтвердить</button>
-                                    <button class="btn btn-danger btn-small" onclick="rejectRequest('${id}')">❌ Отклонить</button>
-                                </td>
+                                <td>${actionButtons}</td>
                             </tr>
                         `;
-                     } catch(approveRowError) {
-                         console.error("Ошибка обработки строки подтверждения:", approveRowError, entry);
-                     }
-                });
+                    }
+                }); // end forEach
 
-                tbody.innerHTML = html;
-                console.log('✅ Подтверждения отрисованы.');
+                if (count === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет ожидающих запросов для вас</td></tr>';
+                } else {
+                    tbody.innerHTML = html;
+                }
+                
+                console.log(`✅ Подтверждения отрисованы, найдено ${count} релевантных запросов.`);
             } catch(e) {
                 console.error("❌ Ошибка отрисовки подтверждений:", e);
                 showAlert("Ошибка отображения подтверждений: " + e.message, 'error');
@@ -1996,6 +2123,7 @@
 
 
         async function approveRequest(requestId) {
+            // ... (Логика без изменений) ...
             console.log(`👍 Попытка подтвердить запрос: ${requestId}`);
             const payload = { requestId: requestId };
             const approveButton = document.querySelector(`button[onclick="approveRequest('${requestId}')"]`);
@@ -2026,6 +2154,7 @@
         }
 
         async function rejectRequest(requestId) {
+            // ... (Логика без изменений) ...
             console.log(`👎 Попытка отклонить запрос: ${requestId}`);
             const payload = { requestId: requestId };
              const approveButton = document.querySelector(`button[onclick="approveRequest('${requestId}')"]`);
@@ -2210,7 +2339,7 @@
         }
 
 
-        // ИЗМЕНЕНИЕ: ГЛАВНАЯ ФУНКЦИЯ УПРАВЛЕНИЯ ИНТЕРФЕЙСОМ
+        // ИЗМЕНЕНИЕ: (Goal 1, 2, 3, 4) ГЛАВНАЯ ФУНКЦИЯ УПРАВЛЕНИЯ ИНТЕРФЕЙСОМ
         function checkCategoryManagementAccess() {
             const admin = allData.admin || [];
             let roleFound = false;
@@ -2240,11 +2369,11 @@
             const contentWrapper = document.getElementById('contentWrapper');
             const body = document.body;
             
-            const headerHamburger = document.getElementById('headerHamburger');
             const bottomNavMenu = document.getElementById('bottomNavMenu');
             const bottomNavBalance = document.getElementById('bottomNavBalance');
             
             const navJournal = document.getElementById('nav-journal');
+            const navTransfers = document.getElementById('nav-transfers');
             const navBalances = document.getElementById('nav-balances');
             const navApprovals = document.getElementById('nav-approvals');
             const navReceived = document.getElementById('nav-received');
@@ -2253,13 +2382,13 @@
             if(headerTitle) headerTitle.textContent = currentUserRole; 
             if(userRoleSpan) userRoleSpan.textContent = 'Роль: ' + currentUserRole;
             
-            body.classList.remove('director-desktop');
-            if(headerHamburger) headerHamburger.style.display = 'none';
+            body.classList.remove('director-desktop'); // Убираем десктопный режим
             if(bottomNavMenu) bottomNavMenu.style.display = 'flex'; // Показываем кнопку "Меню"
             if(bottomNav) bottomNav.style.display = 'flex';
             if(contentWrapper) contentWrapper.style.paddingBottom = 'calc(var(--bottom-nav-height) + var(--safe-area-bottom))';
             
             if(navJournal) navJournal.style.display = 'flex';
+            if(navTransfers) navTransfers.style.display = 'flex'; // Входящие видят все
             if(navBalances) navBalances.style.display = 'flex';
             if(navApprovals) navApprovals.style.display = 'flex';
             if(navReceived) navReceived.style.display = 'none';
@@ -2269,18 +2398,15 @@
             
             if (currentUserRole === 'Сотрудник') {
                 console.log('👤 Применяем UI для "Сотрудник"');
-                if(navJournal) navJournal.style.display = 'none';
-                if(navApprovals) navApprovals.style.display = 'none';
-                if(navReceived) navReceived.style.display = 'flex';
-                if(navBalances) navBalances.style.display = 'none'; // Скрываем из sidebar
-                if(bottomNavBalance) bottomNavBalance.style.display = 'flex'; // Показываем в bottom-nav
+                if(navJournal) navJournal.style.display = 'none'; // (Goal 2)
+                if(navApprovals) navApprovals.style.display = 'none'; // (Goal 3)
+                if(navReceived) navReceived.style.display = 'flex'; // (Goal 2)
+                if(navBalances) navBalances.style.display = 'none'; // (Goal 3)
+                if(bottomNavBalance) bottomNavBalance.style.display = 'flex'; // (Goal 3)
             
             } else if (currentUserRole === 'Директор') {
                 console.log('👤 Применяем UI для "Директор"');
-                body.classList.add('director-desktop'); // Включаем десктопный режим
-                if(headerHamburger) headerHamburger.style.display = 'block'; // Показываем гамбургер (CSS скроет на десктопе)
-                if(bottomNav) bottomNav.style.display = 'none'; // Прячем bottom-nav
-                if(contentWrapper) contentWrapper.style.paddingBottom = '0';
+                // (Goal 1) - Интерфейс как у Ответственного (т.е. ничего не меняем от дефолта)
             
             } else if (currentUserRole === 'Ответственный') {
                  console.log('👤 Применяем UI для "Ответственный" (по умолчанию)');
@@ -2293,7 +2419,7 @@
                 if(contentWrapper) contentWrapper.style.paddingBottom = '0';
             }
 
-            // 4. Управление кнопкой "Добавить категорию" (не зависит от UI выше)
+            // 4. Управление кнопкой "Добавить категорию"
             const allowedRolesAddCategory = ['Директор', 'Бухгалтер', 'Ответственный']; 
             if (addBtn) {
                  const canAdd = allowedRolesAddCategory.includes(currentUserRole);
@@ -2304,6 +2430,7 @@
 
 
         async function submitAddCategory(event) {
+            // ... (Логика без изменений) ...
             event.preventDefault();
             const categoryInput = document.getElementById('newCategory');
             const subcategoryInput = document.getElementById('newSubcategory');
