@@ -11,20 +11,193 @@
             box-sizing: border-box;
         }
 
+        /* * ============================================================================
+         * НОВЫЕ СТИЛИ: МАКЕТ С САЙДБАРОМ (План "Б")
+         * ============================================================================
+        */
+
+        :root {
+            --sidebar-width: 240px;
+            --bottom-bar-height: 65px;
+            --transition-speed: 0.3s;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            
+            /* 1. Делаем body сеткой (сайдбар + контент) */
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr; 
+            grid-template-rows: 1fr;
+            padding: 0; /* Убираем старый padding */
+            
+            /* ИЗМЕНЕНИЕ: Анимация для смены колонок */
+            transition: grid-template-columns var(--transition-speed) ease;
+        }
+
+        /* 2. .nav-tabs (теперь сайдбар) */
+        .nav-tabs {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            display: flex;
+            flex-direction: column; /* Вертикальное меню */
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-bottom: none; /* Убираем старую границу */
+            overflow-y: auto; 
+            padding-top: 20px;
+            
+            /* ИЗМЕНЕНИЕ: Анимация для "уезжания" */
+            transform: translateX(0);
+            transition: transform var(--transition-speed) ease;
+            z-index: 100; /* На всякий случай, поверх контента */
+        }
+        
+        /* 3. Стили кнопок в сайдбаре */
+        .nav-tab {
+            flex: auto; /* Сброс flex: 1 */
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            border-bottom: none; 
+            border-left: 4px solid transparent; 
+            background: transparent;
+            min-width: 0;
+            white-space: nowrap; /* Чтобы текст не переносился при анимации */
+        }
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            border-bottom-color: transparent; /* Переопределяем старое правило */
+            border-left-color: white;
+        }
+
+        /* 4. .container (правая часть) */
+        .container {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            margin: 0; /* Сброс margin: auto */
+            max-width: none; /* Сброс max-width */
+            border-radius: 0;
+            box-shadow: none; /* Убираем тень */
+            overflow-y: auto; /* Контент скроллится НЕЗАВИСИМО от сайдбара */
+            height: 100vh; /* Занимает всю высоту сетки */
+            /* Добавляем padding снизу для .bottom-action-bar */
+            padding-bottom: calc(var(--bottom-bar-height) + 20px);
+            background: white; /* Фон для .container, т.к. body больше не белый */
+        }
+        
+        /* * ============================================================================
+         * НОВЫЕ СТИЛИ: НИЖНЯЯ ПАНЕЛЬ ДЕЙСТВИЙ
+         * ============================================================================
+        */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: var(--sidebar-width); /* Начинается после сайдбара */
+            width: calc(100% - var(--sidebar-width)); /* Занимает оставшуюся ширину */
+            height: var(--bottom-bar-height);
+            background: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 900;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
+            
+            /* ИЗМЕНЕНИЕ: Анимация для ширины/позиции */
+            transition: all var(--transition-speed) ease;
+        }
+        .bottom-action-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 5px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            color: #555;
+            height: 100%;
+        }
+        .bottom-action-btn:hover {
+            background: #f4f4f4;
+        }
+        .bottom-action-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .bottom-action-btn span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* * ============================================================================
+         * НОВЫЕ СТИЛИ: КНОПКА СВЕРНУТЬ/РАЗВЕРНУТЬ САЙДБАР
+         * ============================================================================
+        */
+        .sidebar-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            transition: background 0.3s;
+            display: none; /* По умолчанию скрыта */
+        }
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Показываем кнопку только на десктопе (когда сайдбар активен) */
+        @media (min-width: 769px) {
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        /* * ============================================================================
+         * НОВЫЕ СТИЛИ: СОСТОЯНИЕ СВЕРНУТОГО САЙДБАРА
+         * ============================================================================
+        */
+        body.sidebar-collapsed {
+            grid-template-columns: 0px 1fr;
+        }
+        body.sidebar-collapsed .nav-tabs {
+            transform: translateX(-100%);
+        }
+        body.sidebar-collapsed .bottom-action-bar {
+            left: 0;
+            width: 100%;
+        }
+
+        /* * ============================================================================
+         * ОРИГИНАЛЬНЫЕ СТИЛИ (с небольшими правками)
+         * ============================================================================
+        */
+        body {
+            /* Этот стиль переопределен выше для grid, 
+               но font-family и min-height остаются актуальными */
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            /* Стили .container (margin, max-width, radius) 
+               переопределены выше для макета с сайдбаром */
+            overflow: hidden; /* Этот стиль оставляем */
         }
 
         /* HEADER */
@@ -38,593 +211,131 @@
             flex-wrap: wrap;
             gap: 20px;
         }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .header-info {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info span {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .theme-toggle {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+        .header h1 { font-size: 28px; font-weight: 600; }
+        .header-info { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-info span { font-size: 14px; opacity: 0.9; }
+        .theme-toggle { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.3s; }
+        .theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
 
         /* NAVIGATION */
-        .nav-tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-            overflow-x: auto;
-        }
-
-        .nav-tab {
-            flex: 1;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            background: #f8f9fa;
-            border: none;
-            font-size: 14px;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-            min-width: 120px;
-        }
-
-        .nav-tab:hover {
-            background: #e9ecef;
-            color: #333;
-        }
-
-        .nav-tab.active {
-            background: white;
-            color: #667eea;
-            border-bottom-color: #667eea;
-        }
+        /* Стили .nav-tabs и .nav-tab были переопределены выше для сайдбара */
 
         /* CONTENT */
         .content {
             padding: 30px;
             display: none;
         }
-
-        .content.active {
-            display: block;
-        }
+        .content.active { display: block; }
 
         /* CARDS */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .card .value {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .card.positive {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .card.negative {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 10px; font-weight: 500; }
+        .card .value { font-size: 32px; font-weight: 700; }
+        .card.positive { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .card.negative { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
 
         /* FORMS */
-        .form-container {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .form-row .form-group {
-            margin-bottom: 0;
-        }
+        .form-container { background: #f8f9fa; padding: 30px; border-radius: 12px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; transition: all 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .form-row .form-group { margin-bottom: 0; }
 
         /* BUTTONS */
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: #11998e;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #0d7a6a;
-        }
-
-        .btn-danger {
-            background: #eb3349;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #d42a3d;
-        }
-
-        .btn-secondary {
-            background: #e9ecef;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #dee2e6;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 12px;
-        }
-
-        .btn-block {
-            width: 100%;
-            display: block;
-        }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; display: inline-block; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .btn-success { background: #11998e; color: white; }
+        .btn-success:hover { background: #0d7a6a; }
+        .btn-danger { background: #eb3349; color: white; }
+        .btn-danger:hover { background: #d42a3d; }
+        .btn-secondary { background: #e9ecef; color: #333; }
+        .btn-secondary:hover { background: #dee2e6; }
+        .btn-small { padding: 8px 16px; font-size: 12px; }
+        .btn-block { width: 100%; display: block; }
 
         /* FILTERS */
-        .filters {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .filter-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .filter-group input,
-        .filter-group select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        .filter-group input:focus,
-        .filter-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
+        .filters { background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .filter-group { display: flex; flex-direction: column; }
+        .filter-group label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        .filter-group input, .filter-group select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .filter-buttons { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
 
         /* TABLE */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid #e9ecef;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        thead {
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #333;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
+        .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e9ecef; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        thead { background: #f8f9fa; border-bottom: 2px solid #e9ecef; }
+        th { padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 13px; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #e9ecef; font-size: 14px; }
+        tbody tr:hover { background: #f8f9fa; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
 
         /* CHARTS */
-        .chart-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e9ecef;
-            margin-bottom: 20px;
-        }
-
-        .chart-container h3 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .chart {
-            width: 100%;
-            height: 300px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 14px;
-        }
+        .chart-container { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e9ecef; margin-bottom: 20px; }
+        .chart-container h3 { margin-bottom: 20px; color: #333; font-size: 16px; }
+        .chart { width: 100%; height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; }
 
         /* BALANCE LIST */
-        .balance-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .balance-item {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .balance-item-info h4 {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .balance-item-info p {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .balance-item-value {
-            font-size: 24px;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .balance-item-value.positive {
-            color: #11998e;
-        }
-
-        .balance-item-value.negative {
-            color: #eb3349;
-        }
+        .balance-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .balance-item { background: white; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .balance-item-info h4 { font-size: 16px; color: #333; margin-bottom: 5px; }
+        .balance-item-info p { font-size: 12px; color: #999; }
+        .balance-item-value { font-size: 24px; font-weight: 700; text-align: right; }
+        .balance-item-value.positive { color: #11998e; }
+        .balance-item-value.negative { color: #eb3349; }
 
         /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-            color: #333;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); animation: slideIn 0.3s; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e9ecef; }
+        .modal-header h2 { font-size: 20px; color: #333; }
+        .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+        .modal-close:hover { color: #333; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* ALERTS */
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            display: none;
-            animation: slideIn 0.3s;
-        }
-
-        .alert.active {
-            display: block;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
+        .alert { padding: 15px; margin-bottom: 20px; border-radius: 6px; display: none; animation: slideIn 0.3s; }
+        .alert.active { display: block; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
         /* LOADING */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loading { text-align: center; padding: 40px; color: #999; }
+        .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* EMPTY STATE */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
+        .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+        .empty-state-icon { font-size: 64px; margin-bottom: 20px; }
+        .empty-state-text { font-size: 16px; margin-bottom: 10px; }
 
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
+        /* ACTION BUTTONS */
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .action-card { flex: 1; min-width: 150px; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .action-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+        .action-card-icon { font-size: 32px; margin-bottom: 10px; }
+        .action-card-title { font-weight: 600; font-size: 14px; }
+        .action-card.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .action-card.success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .action-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .action-card.info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
 
-        .empty-state-text {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-info {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-tabs {
-                flex-wrap: wrap;
-            }
-
-            .nav-tab {
-                flex: 0 1 auto;
-                min-width: 100px;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .filters {
-                grid-template-columns: 1fr;
-            }
-
-            .card .value {
-                font-size: 24px;
-            }
-
-            .modal-content {
-                width: 95%;
-            }
-        }
-
-        /* DARK THEME */
+        /* * ============================================================================
+         * DARK THEME (с правками для нового макета)
+         * ============================================================================
+        */
         body.dark-theme {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
@@ -633,32 +344,44 @@
             background: #0f3460;
             color: #e0e0e0;
         }
-
+        
+        /* 1. Dark Theme для .nav-tabs (сайдбара) */
         body.dark-theme .nav-tabs {
-            background: #1a1a2e;
-            border-bottom-color: #16213e;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-bottom-color: transparent;
         }
-
         body.dark-theme .nav-tab {
-            background: #1a1a2e;
+            background: transparent;
             color: #999;
         }
-
         body.dark-theme .nav-tab:hover {
             background: #16213e;
             color: #ccc;
         }
-
         body.dark-theme .nav-tab.active {
             background: #0f3460;
             color: #667eea;
+            border-left-color: #667eea;
+            border-bottom-color: transparent;
         }
 
+        /* 2. Dark Theme для .bottom-action-bar */
+        body.dark-theme .bottom-action-bar {
+            background: #0f3460;
+            border-top-color: #16213e;
+        }
+        body.dark-theme .bottom-action-btn {
+            color: #ccc;
+        }
+        body.dark-theme .bottom-action-btn:hover {
+            background: #16213e;
+        }
+        
+        /* 3. Остальные Dark Theme стили */
         body.dark-theme .form-container,
         body.dark-theme .filters {
             background: #1a1a2e;
         }
-
         body.dark-theme .form-group input,
         body.dark-theme .form-group select,
         body.dark-theme .form-group textarea,
@@ -668,148 +391,148 @@
             border-color: #16213e;
             color: #e0e0e0;
         }
+        body.dark-theme table { background: #1a1a2e; }
+        body.dark-theme thead { background: #16213e; border-bottom-color: #16213e; }
+        body.dark-theme th { color: #e0e0e0; }
+        body.dark-theme td { color: #e0e0e0; border-bottom-color: #16213e; }
+        body.dark-theme tbody tr:hover { background: #16213e; }
+        body.dark-theme .chart-container { background: #1a1a2e; border-color: #16213e; color: #e0e0e0; }
+        body.dark-theme .chart { background: #16213e; }
+        body.dark-theme .balance-item { background: #1a1a2e; border-color: #16213e; }
+        body.dark-theme .balance-item-info h4 { color: #e0e0e0; }
+        body.dark-theme .btn-secondary { background: #16213e; color: #e0e0e0; }
+        body.dark-theme .btn-secondary:hover { background: #0f3460; }
+        body.dark-theme .modal-content { background: #0f3460; color: #e0e0e0; }
+        body.dark-theme .modal-header { border-bottom-color: #16213e; }
+        body.dark-theme .modal-header h2 { color: #e0e0e0; }
+        body.dark-theme .form-group label { color: #e0e0e0; }
 
-        body.dark-theme table {
-            background: #1a1a2e;
-        }
+        /* * ============================================================================
+         * RESPONSIVE (с правками для нового макета)
+         * ============================================================================
+        */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px; /* Убираем сайдбар */
+            }
 
-        body.dark-theme thead {
-            background: #16213e;
-            border-bottom-color: #16213e;
-        }
+            /* 1. Возвращаем body в обычный режим */
+            body {
+                display: block; /* Сбрасываем grid */
+            }
+            
+            /* 2. .nav-tabs (возвращаем как было) */
+            .nav-tabs {
+                grid-column: auto;
+                grid-row: auto;
+                flex-direction: row; /* Возвращаем как было */
+                background: #f8f9fa; /* Старый фон */
+                border-bottom: 2px solid #e9ecef;
+                overflow-x: auto;
+                padding-top: 0;
+                height: auto; /* Сброс */
+                position: static; /* Сброс */
+                
+                /* ИЗМЕНЕНИЕ: Убедимся, что трансформация сброшена */
+                transform: translateX(0) !important; 
+            }
+            
+            /* 3. Стили кнопок .nav-tab (возвращаем как было) */
+            .nav-tab {
+                flex: 1;
+                text-align: center;
+                padding: 16px;
+                font-size: 14px;
+                color: #666;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                min-width: 120px;
+            }
+            .nav-tab:hover {
+                background: #e9ecef;
+                color: #333;
+            }
+            .nav-tab.active {
+                background: white;
+                color: #667eea;
+                border-bottom-color: #667eea;
+                border-left-color: transparent;
+            }
 
-        body.dark-theme th {
-            color: #e0e0e0;
-        }
+            /* 4. .container (возвращаем как было) */
+            .container {
+                grid-column: auto;
+                grid-row: auto;
+                height: auto; /* Сброс */
+                overflow-y: visible; /* Сброс */
+                /* Оставляем отступ для нижней панели */
+                padding-bottom: calc(var(--bottom-bar-height) + 20px); 
+            }
+            
+            /* 5. .bottom-action-bar (на всю ширину) */
+            .bottom-action-bar {
+                left: 0; /* На всю ширину */
+                width: 100%;
+            }
 
-        body.dark-theme td {
-            color: #e0e0e0;
-            border-bottom-color: #16213e;
-        }
+            /* 6. Dark Theme Mobile (восстановление) */
+            body.dark-theme .nav-tabs {
+                background: #1a1a2e;
+                border-bottom-color: #16213e;
+            }
+            body.dark-theme .nav-tab {
+                background: #1a1a2e;
+                color: #999;
+            }
+            body.dark-theme .nav-tab:hover {
+                background: #16213e;
+                color: #ccc;
+            }
+            body.dark-theme .nav-tab.active {
+                background: #0f3460;
+                color: #667eea;
+                border-left-color: transparent;
+                border-bottom-color: #667eea;
+            }
 
-        body.dark-theme tbody tr:hover {
-            background: #16213e;
-        }
-
-        body.dark-theme .chart-container {
-            background: #1a1a2e;
-            border-color: #16213e;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .chart {
-            background: #16213e;
-        }
-
-        body.dark-theme .balance-item {
-            background: #1a1a2e;
-            border-color: #16213e;
-        }
-
-        body.dark-theme .balance-item-info h4 {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .btn-secondary {
-            background: #16213e;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .btn-secondary:hover {
-            background: #0f3460;
-        }
-
-        body.dark-theme .modal-content {
-            background: #0f3460;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .modal-header {
-            border-bottom-color: #16213e;
-        }
-
-        body.dark-theme .modal-header h2 {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .form-group label {
-            color: #e0e0e0;
-        }
-
-        /* ACTION BUTTONS */
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .action-card {
-            flex: 1;
-            min-width: 150px;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .action-card-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .action-card-title {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .action-card.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .action-card.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-        }
-
-        .action-card.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .action-card.info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            /* 7. Оригинальные стили из @media */
+            .header { flex-direction: column; text-align: center; }
+            .header-info { flex-direction: column; width: 100%; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .filters { grid-template-columns: 1fr; }
+            .card .value { font-size: 24px; }
+            .modal-content { width: 95%; }
+            
+            /* 8. ИЗМЕНЕНИЕ: Скрываем кнопку-гамбургер на мобильных */
+            .sidebar-toggle {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Главная</button>
+        <button class="nav-tab" onclick="switchTab('operations')">💼 Операции</button>
+        <button class="nav-tab" onclick="switchTab('journal')">📋 Журнал</button>
+        <button class="nav-tab" onclick="switchTab('balances')">💵 Балансы</button>
+        <button class="nav-tab" onclick="switchTab('analytics')">📈 Аналитика</button>
+        <button class="nav-tab" onclick="switchTab('approvals')">✅ Подтверждения</button>
+    </div>
+
     <div class="container">
         <div class="header">
-            <h1>💰 Система Учета Расходов</h1>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <h1>💰 Система Учета Расходов</h1>
+            </div>
+            
             <div class="header-info">
                 <div class="user-info">
                     <span id="userRole">Роль: Загрузка...</span>
                 </div>
                 <button class="theme-toggle" onclick="toggleTheme()">🌙 Темная тема</button>
             </div>
-        </div>
-
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Главная</button>
-            <button class="nav-tab" onclick="switchTab('operations')">💼 Операции</button>
-            <button class="nav-tab" onclick="switchTab('journal')">📋 Журнал</button>
-            <button class="nav-tab" onclick="switchTab('balances')">💵 Балансы</button>
-            <button class="nav-tab" onclick="switchTab('analytics')">📈 Аналитика</button>
-            <button class="nav-tab" onclick="switchTab('approvals')">✅ Подтверждения</button>
         </div>
 
         <div id="alertContainer" style="padding: 20px 30px 0;">
@@ -838,24 +561,14 @@
                     <div class="value" id="totalBalance">0 </div>
                 </div>
             </div>
+            
             <div class="action-buttons">
-                <div class="action-card primary" onclick="openModal('requestFundsModal')">
-                    <div class="action-card-icon">📥</div>
-                    <div class="action-card-title">Запросить средства</div>
-                </div>
-                <div class="action-card success" onclick="openModal('recordExpenseModal')">
-                    <div class="action-card-icon">💸</div>
-                    <div class="action-card-title">Совершить расход</div>
-                </div>
-                <div class="action-card warning" onclick="openModal('transferFundsModal')">
-                    <div class="action-card-icon">↔️</div>
-                    <div class="action-card-title">Передать средства</div>
-                </div>
                 <div class="action-card info" onclick="openModal('returnFundsModal')">
                     <div class="action-card-icon">↩️</div>
                     <div class="action-card-title">Вернуть остаток</div>
                 </div>
             </div>
+
             <div class="chart-container">
                 <h3>📊 Расходы по категориям (последние 30 дней)</h3>
                 <div class="chart" id="categoryChart">Загрузка данных...</div>
@@ -865,38 +578,27 @@
                 <div class="chart" id="trendChart">Загрузка данных...</div>
             </div>
         </div>
+        
         <div id="operations" class="content">
             <h2 style="margin-bottom: 20px;">💼 Управление операциями</h2>
+            
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="action-card primary" onclick="openModal('requestFundsModal')" style="cursor: pointer;">
-                    <div class="action-card-icon">📥</div>
-                    <div class="action-card-title">Запросить средства</div>
-                    <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Запросить денежные средства у Директора</p>
-                </div>
-                <div class="action-card success" onclick="openModal('recordExpenseModal')" style="cursor: pointer;">
-                    <div class="action-card-icon">💸</div>
-                    <div class="action-card-title">Совершить расход</div>
-                    <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Записать расход и категорию</p>
-                </div>
-                <div class="action-card warning" onclick="openModal('transferFundsModal')" style="cursor: pointer;">
-                    <div class="action-card-icon">↔️</div>
-                    <div class="action-card-title">Передать средства</div>
-                    <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Передать денежные средства сотруднику</p>
-                </div>
                 <div class="action-card info" onclick="openModal('returnFundsModal')" style="cursor: pointer;">
                     <div class="action-card-icon">↩️</div>
                     <div class="action-card-title">Вернуть остаток</div>
                     <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Вернуть неиспользованные средства</p>
                 </div>
-                <div class="action-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer;" onclick="openModal('issueFundsModal')">
+                
+                <div id="issueFundsCard" class="action-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer;" onclick="openModal('issueFundsModal')">
                     <div class="action-card-icon">💰</div>
                     <div class="action-card-title">Выдать средства</div>
                     <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Выдать денежные средства сотруднику</p>
                 </div>
             </div>
         </div>
+
         <div id="journal" class="content">
-            <h2 style="margin-bottom: 20px;">📋 Журнал операций</h2>
+             <h2 style="margin-bottom: 20px;">📋 Журнал операций</h2>
             <div class="filters">
                 <div class="filter-group">
                     <label>Дата от</label>
@@ -1015,6 +717,7 @@
                 </table>
             </div>
         </div>
+
         <div id="requestFundsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1156,7 +859,24 @@
                 </form>
             </div>
         </div>
-    </div> <script>
+
+    </div> <div class="bottom-action-bar">
+        <button class="bottom-action-btn" onclick="openModal('requestFundsModal')">
+            <div class="bottom-action-icon">📥</div>
+            <span>Запросить</span>
+        </button>
+        <button class="bottom-action-btn" onclick="openModal('recordExpenseModal')">
+            <div class="bottom-action-icon">💸</div>
+            <span>Расход</span>
+        </button>
+        <button class="bottom-action-btn" onclick="openModal('transferFundsModal')">
+            <div class="bottom-action-icon">↔️</div>
+            <span>Передать</span>
+        </button>
+    </div>
+
+    
+ <script>
         // ============================================================================
         // API "МОСТ" ДЛЯ NETLIFY
         // ============================================================================
@@ -1212,6 +932,7 @@
 
         // ============================================================================
         // КОНФИГУРАЦИЯ
+        // (Добавлено isSidebarCollapsed)
         // ============================================================================
 
         let allData = {
@@ -1221,6 +942,9 @@
         };
 
         let currentTheme = localStorage.getItem('theme') || 'light';
+        // ИЗМЕНЕНИЕ: Читаем состояние сайдбара из localStorage
+        let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        
         // ID пользователя будет получен из Telegram или установлен по умолчанию
         let currentUserId = null; 
         let currentUserRole = 'Загрузка...';
@@ -1253,6 +977,7 @@
 
         // ============================================================================
         // ИНИЦИАЛИЗАЦИЯ
+        // (Добавлено applySidebarState)
         // ============================================================================
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1289,6 +1014,10 @@
             localStorage.setItem('userId', currentUserId); // Сохраняем для возможного использования
             console.log('👤 Установлен currentUserId:', currentUserId);
             applyTheme(currentTheme); // Применяем тему
+            
+            // ИЗМЕНЕНИЕ: Применяем состояние сайдбара при загрузке
+            applySidebarState();
+            
             await loadData(); // Первая загрузка данных (ждем завершения)
             setInterval(loadData, 30000); // Настраиваем автообновление
             console.log('🏁 Инициализация завершена.');
@@ -1324,7 +1053,7 @@
         }
 
         // ============================================================================
-        // ЗАГРУЗКА ДАННЫХ (Переписано с async/await и callApi)
+        // ЗАГРУЗКА ДАННЫХ (Без изменений)
         // ============================================================================
 
         async function loadData() {
@@ -1368,7 +1097,7 @@
         }
 
         // ============================================================================
-        // DASHBOARD (Без изменений, использует allData)
+        // DASHBOARD (Без изменений)
         // ============================================================================
 
         function updateDashboard() {
@@ -1417,7 +1146,7 @@
         }
 
         // ============================================================================
-        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (Переписано с async/await и callApi)
+        // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ (Без изменений)
         // ============================================================================
 
         async function submitRequestFunds(event) {
@@ -1630,7 +1359,7 @@
         }
 
         // ============================================================================
-        // ЖУРНАЛ (Без изменений в логике отрисовки, использует allData)
+        // ЖУРНАЛ (Без изменений)
         // ============================================================================
 
         function loadJournal() {
@@ -1793,7 +1522,7 @@
         }
 
         // ============================================================================
-        // БАЛАНСЫ (Без изменений в логике отрисовки, использует allData)
+        // БАЛАНСЫ (Без изменений)
         // ============================================================================
 
         function loadBalances() {
@@ -1839,7 +1568,7 @@
 
 
         // ============================================================================
-        // АНАЛИТИКА (Без изменений в логике отрисовки, использует allData)
+        // АНАЛИТИКА (Без изменений)
         // ============================================================================
 
         function loadAnalytics() {
@@ -1859,7 +1588,7 @@
         }
 
         // ============================================================================
-        // ПОДТВЕРЖДЕНИЯ (Логика отрисовки без изменений, вызовы API переписаны)
+        // ПОДТВЕРЖДЕНИЯ (Без изменений)
         // ============================================================================
 
         function loadApprovals() {
@@ -1999,7 +1728,7 @@
         }
 
         // ============================================================================
-        // ВСПОМОГАТЕЛЬНЫЕ (Переписано `loadCategories` и `submitAddCategory`)
+        // ВСПОМОГАТЕЛЬНЫЕ (Без изменений)
         // ============================================================================
 
         function getNameById(id) {
@@ -2142,6 +1871,11 @@
         }
 
 
+        /**
+         * ============================================================================
+         * (Логика скрытия кнопки "Выдать средства" осталась без изменений)
+         * ============================================================================
+         */
         function checkCategoryManagementAccess() {
             // Эта функция теперь вызывается после загрузки данных в loadData()
             const admin = allData.admin || [];
@@ -2174,6 +1908,21 @@
                  addBtn.style.display = canAdd ? 'inline-block' : 'none'; // Используем inline-block для кнопки
                  console.log(`🔧 Кнопка добавления категории ${canAdd ? 'показана' : 'скрыта'}.`);
             }
+            
+            // ===================================================================
+            // НОВЫЙ КОД: Показываем/скрываем кнопку "Выдать средства"
+            // ===================================================================
+            const issueFundsCard = document.getElementById('issueFundsCard');
+            if (issueFundsCard) {
+                // Роли, которые могут ВИДЕТЬ кнопку (все, КРОМЕ Ответственного и Сотрудника)
+                const canIssueRoles = ['Директор', 'Бухгалтер']; // Явные роли, которые могут
+                const canIssue = canIssueRoles.includes(currentUserRole);
+                
+                // .action-card является grid-item, поэтому 'block' подходит
+                issueFundsCard.style.display = canIssue ? 'block' : 'none'; 
+                console.log(`🔧 Кнопка "Выдать средства" ${canIssue ? 'показана' : 'скрыта'} для роли: ${currentUserRole}.`);
+            }
+            // ===================================================================
         }
 
 
@@ -2236,9 +1985,31 @@
         }
 
         // ============================================================================
-        // ТЕМА И ЗАКРЫТИЕ МОДАЛЕЙ (Без изменений)
+        // ТЕМА, САЙДБАР И ЗАКРЫТИЕ МОДАЛЕЙ (Добавлены toggleSidebar и applySidebarState)
         // ============================================================================
         
+        /**
+         * ИЗМЕНЕНИЕ: Новая функция для переключения сайдбара
+         */
+        function toggleSidebar() {
+            const body = document.body;
+            body.classList.toggle('sidebar-collapsed');
+            // Сохраняем состояние в localStorage
+            isSidebarCollapsed = body.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
+            console.log(`🗂️ Сайдбар ${isSidebarCollapsed ? 'свернут' : 'развернут'}`);
+        }
+
+        /**
+         * ИЗМЕНЕНИЕ: Новая функция для применения состояния сайдбара при загрузке
+         */
+        function applySidebarState() {
+             if (isSidebarCollapsed) {
+                 document.body.classList.add('sidebar-collapsed');
+             }
+             console.log(`🗂️ Состояние сайдбара применено: ${isSidebarCollapsed ? 'Collapsed' : 'Expanded'}`);
+        }
+
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', currentTheme);
