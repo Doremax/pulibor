@@ -19,18 +19,29 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; transition: padding-bottom 0.3s ease; }
-        .content-wrapper { padding-top: calc(var(--header-height) + var(--safe-area-top)); padding-bottom: 0; margin-bottom: 0; transition: margin-bottom 0.3s ease; }
-        .container { max-width: 100%; margin: 0 auto; background: white; min-height: calc(100vh - var(--header-height) - var(--safe-area-top)); }
+        
+        /* ОБЕРТКА КОНТЕНТА: Управляем отступом снизу через JS */
+        .content-wrapper { 
+             padding-top: calc(var(--header-height) + var(--safe-area-top)); 
+             padding-bottom: 0; /* Отступ создается через margin-bottom */
+             margin-bottom: 0; /* Управляется JS */
+             transition: margin-bottom 0.3s ease; /* Плавный переход */
+             min-height: calc(100vh - (var(--header-height) + var(--safe-area-top))); /* Чтобы занимал высоту */
+             display: flex; /* Для корректной работы min-height с flex-контейнером */
+             flex-direction: column;
+        }
+        .container { 
+            max-width: 100%; 
+            margin: 0 auto; 
+            background: white; 
+            flex-grow: 1; /* Растягивается на доступное пространство */
+        }
 
-        /* ============================================================================ */
-        /* HEADER (ШАПКА) */
-        /* ============================================================================ */
+        /* HEADER */
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0 15px; display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: calc(var(--header-height) + var(--safe-area-top)); padding-top: var(--safe-area-top); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .header h1 { font-size: 20px; font-weight: 600; }
         
-        /* ============================================================================ */
-        /* БОКОВОЕ МЕНЮ (SIDEBAR) */
-        /* ============================================================================ */
+        /* SIDEBAR */
         .sidebar { position: fixed; top: 0; right: 0; left: auto; width: var(--sidebar-width); height: 100%; background: #f8f9fa; z-index: 1002; transform: translateX(100%); transition: transform 0.3s ease-out; box-shadow: -4px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.active { transform: translateX(0); }
         .sidebar-header { padding: 20px; padding-top: calc(var(--safe-area-top) + 20px); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
@@ -42,36 +53,17 @@
         .nav-tab:hover { background: #e9ecef; color: #333; } .nav-tab.active { background: white; color: #667eea; border-right-color: #667eea; } .nav-tab.active .icon { color: #667eea; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; } .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
-        /* ============================================================================ */
-        /* НИЖНЕЕ МЕНЮ (BOTTOM NAV) */
-        /* ============================================================================ */
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            z-index: 100; 
-            background: #f8f9fa; 
-            border-top: 1px solid #e9ecef; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); 
-            display: none; /* JS управляет видимостью */
-            /* Расчет высоты + ОБЯЗАТЕЛЬНЫЙ ПАДДИНГ СНИЗУ */
-            height: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); 
-            padding-bottom: var(--safe-area-bottom); /* << --- ЭТО КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */
-        }
-        .bottom-nav-item { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; /* Занимает всю высоту, включая паддинг */ font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: #f8f9fa; border-top: 1px solid #e9ecef; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); display: none; height: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); padding-bottom: var(--safe-area-bottom); /* << --- КЛЮЧЕВОЙ ОТСТУП */ }
+        .bottom-nav-item { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; }
         .bottom-nav-item:hover { background: #e9ecef; } .bottom-nav-item .icon { font-size: 24px; margin-bottom: 2px; }
         
-        /* ============================================================================ */
-        /* СТИЛИ ТЕМНОЙ ТЕМЫ */
-        /* ============================================================================ */
+        /* DARK THEME */
         body.dark-theme { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); } body.dark-theme .container { background: #0f3460; color: #e0e0e0; } body.dark-theme .sidebar { background: #1a1a2e; } body.dark-theme .sidebar-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); } body.dark-theme .nav-tab { background: #1a1a2e; color: #999; border-bottom-color: #16213e; } body.dark-theme .nav-tab .icon { color: #888; } body.dark-theme .nav-tab:hover { background: #16213e; color: #ccc; } body.dark-theme .nav-tab.active { background: #0f3460; color: #667eea; } body.dark-theme .nav-tab.active .icon { color: #667eea; } body.dark-theme .bottom-nav { background: #1a1a2e; border-top-color: #16213e; } body.dark-theme .bottom-nav-item { color: #999; } body.dark-theme .bottom-nav-item:hover { background: #16213e; } body.dark-theme .form-container, body.dark-theme .filters { background: #1a1a2e; } body.dark-theme .form-group input, body.dark-theme .form-group select, body.dark-theme .form-group textarea, body.dark-theme .filter-group input, body.dark-theme .filter-group select { background: #16213e; border-color: #16213e; color: #e0e0e0; } body.dark-theme table { background: #1a1a2e; } body.dark-theme thead { background: #16213e; border-bottom-color: #16213e; } body.dark-theme th { color: #e0e0e0; } body.dark-theme td { color: #e0e0e0; border-bottom-color: #16213e; } body.dark-theme tbody tr:hover { background: #16213e; } body.dark-theme .chart-container { background: #1a1a2e; border-color: #16213e; color: #e0e0e0; } 
         body.dark-theme .chart { background: #16213e; color: #bbb; } body.dark-theme .chart .bar { background-color: #7f8dde; } body.dark-theme .chart .label { color: #aaa; } body.dark-theme .chart .value { color: #ddd; }
         body.dark-theme .balance-item { background: #1a1a2e; border-color: #16213e; } body.dark-theme .balance-item-info h4 { color: #e0e0e0; } body.dark-theme .btn-secondary { background: #16213e; color: #e0e0e0; } body.dark-theme .btn-secondary:hover { background: #0f3460; } body.dark-theme .modal-content { background: #0f3460; color: #e0e0e0; } body.dark-theme .modal-header { border-bottom-color: #16213e; } body.dark-theme .modal-header h2 { color: #e0e0e0; } body.dark-theme .form-group label { color: #e0e0e0; }
 
-        /* ============================================================================ */
-        /* СТИЛИ КОНТЕНТА (КАРТОЧКИ, ФОРМЫ, ТАБЛИЦЫ, ГРАФИКИ) */
-        /* ============================================================================ */
+        /* CONTENT STYLES (Cards, Forms, Tables, Charts etc.) */
         .content { padding: 20px; display: none; } .content.active { display: block; }
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 25px; } 
         .card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); } 
@@ -99,12 +91,7 @@
     <div class="sidebar" id="sidebar"> <div class="sidebar-header"> <div class="user-info"> <span id="userRole">Роль: Загрузка...</span> </div> <button class="theme-toggle" onclick="toggleTheme()">🌙 Темная</button> </div> <div class="sidebar-nav"> <button class="nav-tab active" id="nav-dashboard" onclick="switchTab('dashboard')"><span class="icon">🏠</span> <span>Главная</span></button> <button class="nav-tab" id="nav-operations" onclick="switchTab('operations')"><span class="icon">💳</span> <span>Операции</span></button> <button class="nav-tab" id="nav-received" onclick="switchTab('received')" style="display: none;"><span class="icon">💰</span> <span>Получено</span></button> <button class="nav-tab" id="nav-journal" onclick="switchTab('journal')"><span class="icon">📄</span> <span>Журнал</span></button> <button class="nav-tab" id="nav-transfers" onclick="switchTab('transfers')" style="display: none;"><span class="icon">➡️</span> <span>Входящие</span></button> <button class="nav-tab" id="nav-balances" onclick="switchTab('balances')"><span class="icon">🏦</span> <span>Балансы</span></button> <button class="nav-tab" id="nav-analytics" onclick="switchTab('analytics')"><span class="icon">📈</span> <span>Аналитика</span></button> <button class="nav-tab" id="nav-approvals" onclick="switchTab('approvals')"><span class="icon">✅</span> <span>Подтверждения</span></button> </div> </div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <div class="content-wrapper" id="contentWrapper"> <div class="container"> <div id="alertContainer" style="padding: 20px 20px 0;"> <div id="successAlert" class="alert alert-success"></div> <div id="errorAlert" class="alert alert-error"></div> <div id="warningAlert" class="alert alert-warning"></div> <div id="infoAlert" class="alert alert-info"></div> </div> 
-        <div id="dashboard" class="content active"> 
-            <div class="cards-grid"> <div class="card"> <h3>Мои расходы</h3> <div class="value" id="totalExpenses">0 ₽</div> </div> <div class="card"> <h3>Мне выдано</h3> <div class="value" id="totalIssued">0 ₽</div> </div> <div class="card"> <h3>Мои запросы</h3> <div class="value" id="pendingRequests">0</div> </div> <div class="card positive"> <h3>Мой баланс</h3> <div class="value" id="totalBalance">0 ₽</div> </div> <div class="card info" id="responsibleBalanceCard" style="display: none;"> <h3>Баланс Ответств.</h3> <div class="value" id="responsibleBalance">0 ₽</div> </div> </div> 
-            <div class="action-buttons"> <div class="action-card primary" onclick="openModal('requestFundsModal')"> <div class="action-card-icon">📥</div> <div class="action-card-title">Запросить средства</div> </div> <div class="action-card success" onclick="openModal('recordExpenseModal')"> <div class="action-card-icon">💸</div> <div class="action-card-title">Совершить расход</div> </div> <div class="action-card warning" onclick="openModal('transferFundsModal')"> <div class="action-card-icon">↔️</div> <div class="action-card-title">Передать средства</div> </div> </div> 
-            <div class="chart-container"> <h3>📊 Расходы по категориям (30 дней)</h3> <div class="chart" id="categoryChart"><div class="loading"><div class="spinner"></div></div></div> </div> 
-            <div class="chart-container"> <h3>📈 Тренд расходов (30 дней)</h3> <div class="chart" id="trendChart"><div class="loading"><div class="spinner"></div></div></div> </div> 
-        </div> 
+        <div id="dashboard" class="content active"> <div class="cards-grid"> <div class="card"> <h3>Мои расходы</h3> <div class="value" id="totalExpenses">0 ₽</div> </div> <div class="card"> <h3>Мне выдано</h3> <div class="value" id="totalIssued">0 ₽</div> </div> <div class="card"> <h3>Мои запросы</h3> <div class="value" id="pendingRequests">0</div> </div> <div class="card positive"> <h3>Мой баланс</h3> <div class="value" id="totalBalance">0 ₽</div> </div> <div class="card info" id="responsibleBalanceCard" style="display: none;"> <h3>Баланс Ответств.</h3> <div class="value" id="responsibleBalance">0 ₽</div> </div> </div> <div class="action-buttons"> <div class="action-card primary" onclick="openModal('requestFundsModal')"> <div class="action-card-icon">📥</div> <div class="action-card-title">Запросить средства</div> </div> <div class="action-card success" onclick="openModal('recordExpenseModal')"> <div class="action-card-icon">💸</div> <div class="action-card-title">Совершить расход</div> </div> <div class="action-card warning" onclick="openModal('transferFundsModal')"> <div class="action-card-icon">↔️</div> <div class="action-card-title">Передать средства</div> </div> </div> <div class="chart-container"> <h3>📊 Расходы по категориям (30 дней)</h3> <div class="chart" id="categoryChart"><div class="loading"><div class="spinner"></div></div></div> </div> <div class="chart-container"> <h3>📈 Тренд расходов (30 дней)</h3> <div class="chart" id="trendChart"><div class="loading"><div class="spinner"></div></div></div> </div> </div> 
         <div id="operations" class="content"> <h2 style="margin-bottom: 20px;">💼 Управление операциями</h2> <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;"> <div class="action-card primary" onclick="openModal('requestFundsModal')" style="cursor: pointer;"> <div class="action-card-icon">📥</div> <div class="action-card-title">Запросить средства</div> <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Запросить денежные средства</p> </div> <div class="action-card success" onclick="openModal('recordExpenseModal')" style="cursor: pointer;"> <div class="action-card-icon">💸</div> <div class="action-card-title">Совершить расход</div> <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Записать расход и категорию</p> </div> <div class="action-card warning" onclick="openModal('transferFundsModal')" style="cursor: pointer;"> <div class="action-card-icon">↔️</div> <div class="action-card-title">Передать средства</div> <p style="font-size: 12px; margin-top: 10px; opacity: 0.9;">Передать денежные средства сотруднику</p> </div> </div> </div> 
         <div id="received" class="content"> <h2 style="margin-bottom: 20px;">💰 Получено в этом месяце</h2> <div class="loading"><div class="spinner"></div><p>Загрузка...</p></div> </div> 
         <div id="journal" class="content"> <h2 style="margin-bottom: 20px;">📋 Журнал операций</h2> <div class="filters"> <div class="filter-group"> <label>Дата от</label> <input type="date" id="filterDateFrom" onchange="applyFilters()"> </div> <div class="filter-group"> <label>Дата до</label> <input type="date" id="filterDateTo" onchange="applyFilters()"> </div> <div class="filter-group"> <label>Тип</label> <select id="filterType" onchange="applyFilters()"> <option value="">Все</option> <option value="Запрос">Запрос</option> <option value="Выдача">Выдача</option> <option value="Расход">Расход</option> <option value="Возврат">Возврат</option> <option value="Передача">Передача</option> </select> </div> <div class="filter-group"> <label>Статус</label> <select id="filterStatus" onchange="applyFilters()"> <option value="">Все</option> <option value="Подтверждено">Подтверждено</option> <option value="Ожидает">Ожидает</option> <option value="Отклонено">Отклонено</option> </select> </div> <div class="filter-buttons"> <button class="btn btn-primary" onclick="applyFilters()">🔍</button> <button class="btn btn-secondary" onclick="resetFilters()">↺</button> <button class="btn btn-success" onclick="exportToCSV()">📥 CSV</button> </div> </div> <div class="table-container"> <table id="journalTable"> <thead> <tr> <th>Дата</th> <th>ID</th> <th>Тип</th> <th>Статус</th> <th>Сумма</th> <th>От кого</th> <th>Кому</th> <th>Категория</th> <th>Комментарий</th> </tr> </thead> <tbody id="journalBody"> <tr><td colspan="9" class="loading"><div class="spinner"></div></td></tr> </tbody> </table> </div> </div> 
@@ -124,7 +111,7 @@
         // API "МОСТ" 
         // ============================================================================
         const API_URL = 'https://script.google.com/macros/s/AKfycbxztQgwaMKfXVSjubNKK90IYKtbye7N3S-WtMAwn_N7E6PONbAOAtwPUlglmMA0YKjLWQ/exec'; 
-        async function callApi(action, payload = {}) { /* ... Код функции callApi ... */ console.log(`🚀 API Call: ${action}`, payload); try { const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload }) }); const responseText = await response.text(); console.log(`📬 API Response (${action}): ${response.status} ${response.statusText}`, responseText); if (!response.ok) { throw new Error(`Network error: ${response.status} ${response.statusText}. Response: ${responseText}`); } let result; try { result = JSON.parse(responseText); } catch (jsonError) { console.error('JSON Parse Error:', jsonError); throw new Error(`Failed to parse server response: ${responseText}`); } if (result.success === false && result.error) { throw new Error(result.error); } console.log(`✅ API Success (${action}):`, result); return result; } catch (error) { console.error(`❌ API Error (${action}):`, error); showAlert(`Критическая ошибка API (${action}): ${error.message}`, 'error'); throw error; } }
+        async function callApi(action, payload = {}) { console.log(`🚀 API Call: ${action}`, payload); try { const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload }) }); const responseText = await response.text(); console.log(`📬 API Response (${action}): ${response.status} ${response.statusText}`, responseText); if (!response.ok) { throw new Error(`Network error: ${response.status} ${response.statusText}. Response: ${responseText}`); } let result; try { result = JSON.parse(responseText); } catch (jsonError) { console.error('JSON Parse Error:', jsonError); throw new Error(`Failed to parse server response: ${responseText}`); } if (result.success === false && result.error) { throw new Error(result.error); } console.log(`✅ API Success (${action}):`, result); return result; } catch (error) { console.error(`❌ API Error (${action}):`, error); showAlert(`Критическая ошибка API (${action}): ${error.message}`, 'error'); throw error; } }
         
         // ============================================================================
         // КОНФИГУРАЦИЯ
@@ -221,16 +208,47 @@
         function updateCategorySelect() { try { const s=document.getElementById('expenseCategory'); if(!s)return; let o='<option value="">Выбрать...</option>'; const k=Object.keys(categoriesData||{}); console.log('🔄 Категории:', k); k.sort().forEach(c=>{o+=`<option value="${c}">${c}</option>`;}); s.innerHTML=o; updateSubcategories(); console.log('✅ Select кат. OK.');}catch(e){console.error("❌ Select кат. err:",e);showAlert("Ошибка кат.: "+e.message,'error');}}
         function updateSubcategories() { try { const cs=document.getElementById('expenseCategory'), ss=document.getElementById('expenseSubcategory'); if(!cs||!ss)return; const sc=cs.value; let o='<option value="">Выбрать...</option>'; console.log(`🔄 Подкатегории для "${sc}"`); if(sc&&categoriesData&&Array.isArray(categoriesData[sc])){categoriesData[sc].sort().forEach(s=>{o+=`<option value="${s}">${s}</option>`;});} ss.innerHTML=o; console.log('✅ Select подкат. OK.');}catch(e){console.error("❌ Select подкат. err:",e);showAlert("Ошибка подкат.: "+e.message,'error');}}
         
-        // ГЛАВНАЯ ФУНКЦИЯ УПРАВЛЕНИЯ UI
+        // ГЛАВНАЯ ФУНКЦИЯ УПРАВЛЕНИЯ UI (С ИСПРАВЛЕННЫМ ОТСТУПОМ)
         function checkCategoryManagementAccess() {
             const admin = allData.admin || []; let roleFound = false; currentUserRole = 'Не авторизован'; console.log(`🔐 Проверка прав для ID: ${currentUserId}`);
             for (let i=0; i<admin.length; i++) { if (Array.isArray(admin[i]) && String(admin[i][0]).trim() === String(currentUserId).trim()) { currentUserRole = admin[i][1] || 'Не определена'; roleFound = true; console.log(`👤 Роль: ${currentUserRole}`); break; } } if (!roleFound) { console.warn(`👤 Роль для ID ${currentUserId} не найдена.`); }
             const ht=document.getElementById('headerTitle'), urs=document.getElementById('userRole'), addBtn=document.getElementById('addCategoryBtn'), bn=document.getElementById('bottomNav'), cw=document.getElementById('contentWrapper'), body=document.body, bnm=document.getElementById('bottomNavMenu'), bnb=document.getElementById('bottomNavBalance'), nj=document.getElementById('nav-journal'), nt=document.getElementById('nav-transfers'), nbl=document.getElementById('nav-balances'), na=document.getElementById('nav-approvals'), nr=document.getElementById('nav-received'), rc=document.getElementById('responsibleBalanceCard');
             if(ht) ht.textContent=currentUserRole; if(urs) urs.textContent='Роль: '+currentUserRole; body.classList.remove('director-desktop'); 
-            let isBnVisible = false; if(bn&&cw) { if(roleFound){bn.style.display='flex'; isBnVisible=true;} else {bn.style.display='none';} cw.style.marginBottom=isBnVisible ? 'calc(var(--bottom-nav-height) + var(--safe-area-bottom))' : '0'; console.log(`📱 Отступ: ${cw.style.marginBottom}`); }
+            
+            // --- Управление видимостью Bottom Nav и отступом контента ---
+            let isBnVisible = false; 
+            const allowedRolesBottomNav = ['Сотрудник', 'Ответственный', 'Директор']; // Все авторизованные видят панель
+
+            if(bn && cw) { 
+                if (roleFound && allowedRolesBottomNav.includes(currentUserRole)) { // Показываем панель, если роль найдена и разрешена
+                    bn.style.display = 'flex'; 
+                    isBnVisible = true;
+                } else { 
+                    bn.style.display = 'none'; 
+                } 
+                // Устанавливаем margin-bottom ДЛЯ КОНТЕНТА, если панель видна
+                cw.style.marginBottom = isBnVisible ? 'calc(var(--bottom-nav-height) + var(--safe-area-bottom))' : '0'; 
+                console.log(`📱 Отступ контента: ${cw.style.marginBottom}`); 
+            } else {
+                console.error("Не найден #bottomNav или #contentWrapper!");
+                if(cw) cw.style.marginBottom = '0'; // Запасной вариант
+            }
+            
+            // --- Сброс видимости кнопок/вкладок ---
             if(bnm)bnm.style.display='flex'; if(nj)nj.style.display='flex'; if(nt)nt.style.display='flex'; if(nbl)nbl.style.display='flex'; if(na)na.style.display='flex'; if(nr)nr.style.display='none'; if(bnb)bnb.style.display='none'; if(rc)rc.style.display='none'; 
-            if (currentUserRole === 'Сотрудник') { console.log('👤 UI Сотрудник'); if(nj)nj.style.display='none'; if(na)na.style.display='none'; if(nr)nr.style.display='flex'; if(nbl)nbl.style.display='none'; if(bnb)bnb.style.display='flex'; if(bnm)bnm.style.display='none'; } 
-            else if (currentUserRole === 'Директор') { console.log('👤 UI Директор'); if(rc)rc.style.display='block'; }
+            
+            // --- Исключения для "Сотрудника" ---
+            if (currentUserRole === 'Сотрудник') { 
+                console.log('👤 UI Сотрудник'); 
+                if(nj)nj.style.display='none'; if(na)na.style.display='none'; if(nr)nr.style.display='flex'; if(nbl)nbl.style.display='none'; if(bnb)bnb.style.display='flex'; if(bnm)bnm.style.display='none'; 
+            } 
+            // --- Исключения для "Директора" ---
+            else if (currentUserRole === 'Директор') { 
+                console.log('👤 UI Директор'); 
+                if(rc)rc.style.display='block'; 
+            }
+            
+            // --- Кнопка "Добавить категорию" ---
             const allowedAdd = ['Директор','Бухгалтер','Ответственный']; if (addBtn) { const canAdd = allowedAdd.includes(currentUserRole); addBtn.style.display=canAdd?'inline-block':'none'; console.log(`🔧 Кнопка '+': ${canAdd?'OK':'X'}.`); }
         }
 
