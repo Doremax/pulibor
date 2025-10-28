@@ -18,15 +18,20 @@
             --chart-label-color: #555;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            /* ИЗМЕНЕНИЕ: Управляем padding-bottom через JS */
+            padding-bottom: 0; 
+            transition: padding-bottom 0.3s ease; 
+        }
         
-        /* ОБЕРТКА КОНТЕНТА: Управляем padding-bottom через JS */
+        /* ОБЕРТКА КОНТЕНТА: Больше не нужен нижний отступ */
         .content-wrapper { 
              padding-top: calc(var(--header-height) + var(--safe-area-top)); 
-             /* ИЗМЕНЕНИЕ: Используем padding-bottom вместо margin-bottom */
-             padding-bottom: 0; /* Управляется JS */
-             margin-bottom: 0; /* Убран */
-             transition: padding-bottom 0.3s ease; /* Плавный переход */
+             padding-bottom: 0; 
+             margin-bottom: 0; 
              min-height: calc(100vh - (var(--header-height) + var(--safe-area-top))); 
              display: flex; 
              flex-direction: column;
@@ -50,7 +55,7 @@
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; } .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
         /* ============================================================================ */
-        /* BOTTOM NAV (ИСПРАВЛЕНО - Новый подход) */
+        /* BOTTOM NAV (ИСПРАВЛЕНО - Третий подход) */
         /* ============================================================================ */
         .bottom-nav { 
             position: fixed; 
@@ -67,13 +72,15 @@
             height: var(--bottom-nav-height); 
             /* ИЗМЕНЕНИЕ: Отступ *внутри* панели для системных кнопок */
             padding-bottom: var(--safe-area-bottom); 
-            /* ИЗМЕНЕНИЕ: Убедимся, что padding добавляется к высоте */
+            /* ИЗМЕНЕНИЕ: Убедимся, что padding добавляется к высоте (по умолчанию для div) */
             box-sizing: content-box; 
         }
-        .bottom-nav-item { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; 
+        .bottom-nav-item { 
+            background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; 
             /* ИЗМЕНЕНИЕ: Высота кнопки = высоте контентной части панели */
             height: var(--bottom-nav-height); 
-            font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; }
+            font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; 
+        }
         .bottom-nav-item:hover { background: #e9ecef; } .bottom-nav-item .icon { font-size: 24px; margin-bottom: 2px; }
         
         /* DARK THEME */
@@ -244,10 +251,10 @@
                 } else { 
                     bn.style.display = 'none'; 
                 } 
-                // ИЗМЕНЕНИЕ: Устанавливаем margin-bottom = высоте панели (без safe-area, т.к. панель уже поднята)
-                cw.style.marginBottom = isBnVisible ? 'var(--bottom-nav-height)' : '0'; 
-                console.log(`📱 Отступ контента: ${cw.style.marginBottom}`); 
-            } else { console.error("Не найден #bottomNav или #contentWrapper!"); if(cw) cw.style.marginBottom = '0'; }
+                // ИЗМЕНЕНИЕ: Устанавливаем padding-bottom = полной высоте панели (контент + safe-area)
+                document.body.style.paddingBottom = isBnVisible ? 'calc(var(--bottom-nav-height) + var(--safe-area-bottom))' : '0'; 
+                console.log(`📱 Отступ body: ${document.body.style.paddingBottom}`); 
+            } else { console.error("Не найден #bottomNav или #contentWrapper!"); document.body.style.paddingBottom = '0'; }
             
             // --- Сброс видимости кнопок/вкладок ---
             if(bnm)bnm.style.display='flex'; if(nj)nj.style.display='flex'; if(nt)nt.style.display='flex'; if(nbl)nbl.style.display='flex'; if(na)na.style.display='flex'; if(nr)nr.style.display='none'; if(bnb)bnb.style.display='none'; if(rc)rc.style.display='none'; 
