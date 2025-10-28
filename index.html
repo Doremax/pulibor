@@ -14,7 +14,7 @@
             --header-height: 60px;
             --bottom-nav-height: 60px;
             --sidebar-width: 280px; 
-            --chart-bar-color: #667eea; /* Цвет столбцов графика */
+            --chart-bar-color: #667eea; 
             --chart-label-color: #555;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
@@ -45,24 +45,32 @@
         /* ============================================================================ */
         /* НИЖНЕЕ МЕНЮ (BOTTOM NAV) */
         /* ============================================================================ */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: #f8f9fa; border-top: 1px solid #e9ecef; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); display: none; height: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); padding-bottom: var(--safe-area-bottom); }
-        .bottom-nav-item { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; }
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 100; 
+            background: #f8f9fa; 
+            border-top: 1px solid #e9ecef; 
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); 
+            display: none; /* JS управляет видимостью */
+            /* Расчет высоты + ОБЯЗАТЕЛЬНЫЙ ПАДДИНГ СНИЗУ */
+            height: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); 
+            padding-bottom: var(--safe-area-bottom); /* << --- ЭТО КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */
+        }
+        .bottom-nav-item { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; /* Занимает всю высоту, включая паддинг */ font-size: 10px; color: #666; transition: background 0.3s; padding: 5px 0; }
         .bottom-nav-item:hover { background: #e9ecef; } .bottom-nav-item .icon { font-size: 24px; margin-bottom: 2px; }
         
         /* ============================================================================ */
         /* СТИЛИ ТЕМНОЙ ТЕМЫ */
         /* ============================================================================ */
         body.dark-theme { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); } body.dark-theme .container { background: #0f3460; color: #e0e0e0; } body.dark-theme .sidebar { background: #1a1a2e; } body.dark-theme .sidebar-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); } body.dark-theme .nav-tab { background: #1a1a2e; color: #999; border-bottom-color: #16213e; } body.dark-theme .nav-tab .icon { color: #888; } body.dark-theme .nav-tab:hover { background: #16213e; color: #ccc; } body.dark-theme .nav-tab.active { background: #0f3460; color: #667eea; } body.dark-theme .nav-tab.active .icon { color: #667eea; } body.dark-theme .bottom-nav { background: #1a1a2e; border-top-color: #16213e; } body.dark-theme .bottom-nav-item { color: #999; } body.dark-theme .bottom-nav-item:hover { background: #16213e; } body.dark-theme .form-container, body.dark-theme .filters { background: #1a1a2e; } body.dark-theme .form-group input, body.dark-theme .form-group select, body.dark-theme .form-group textarea, body.dark-theme .filter-group input, body.dark-theme .filter-group select { background: #16213e; border-color: #16213e; color: #e0e0e0; } body.dark-theme table { background: #1a1a2e; } body.dark-theme thead { background: #16213e; border-bottom-color: #16213e; } body.dark-theme th { color: #e0e0e0; } body.dark-theme td { color: #e0e0e0; border-bottom-color: #16213e; } body.dark-theme tbody tr:hover { background: #16213e; } body.dark-theme .chart-container { background: #1a1a2e; border-color: #16213e; color: #e0e0e0; } 
-        /* ИЗМЕНЕНИЕ: Стили для темных графиков */
-        body.dark-theme .chart { background: #16213e; color: #bbb; } 
-        body.dark-theme .chart .bar { background-color: #7f8dde; }
-        body.dark-theme .chart .label { color: #aaa; }
-        body.dark-theme .chart .value { color: #ddd; }
-
+        body.dark-theme .chart { background: #16213e; color: #bbb; } body.dark-theme .chart .bar { background-color: #7f8dde; } body.dark-theme .chart .label { color: #aaa; } body.dark-theme .chart .value { color: #ddd; }
         body.dark-theme .balance-item { background: #1a1a2e; border-color: #16213e; } body.dark-theme .balance-item-info h4 { color: #e0e0e0; } body.dark-theme .btn-secondary { background: #16213e; color: #e0e0e0; } body.dark-theme .btn-secondary:hover { background: #0f3460; } body.dark-theme .modal-content { background: #0f3460; color: #e0e0e0; } body.dark-theme .modal-header { border-bottom-color: #16213e; } body.dark-theme .modal-header h2 { color: #e0e0e0; } body.dark-theme .form-group label { color: #e0e0e0; }
 
         /* ============================================================================ */
-        /* СТИЛИ КОНТЕНТА (КАРТОЧКИ, ФОРМЫ, ТАБЛИЦЫ и т.д.) */
+        /* СТИЛИ КОНТЕНТА (КАРТОЧКИ, ФОРМЫ, ТАБЛИЦЫ, ГРАФИКИ) */
         /* ============================================================================ */
         .content { padding: 20px; display: none; } .content.active { display: block; }
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 25px; } 
@@ -76,42 +84,23 @@
         .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e9ecef; } table { width: 100%; border-collapse: collapse; background: white; } thead { background: #f8f9fa; border-bottom: 2px solid #e9ecef; } th { padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 13px; text-transform: uppercase; } td { padding: 15px; border-bottom: 1px solid #e9ecef; font-size: 14px; } tbody tr:hover { background: #f8f9fa; }
         .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; } .status-approved { background: #d4edda; color: #155724; } .status-pending { background: #fff3cd; color: #856404; } .status-rejected { background: #f8d7da; color: #721c24; }
         .chart-container { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e9ecef; margin-bottom: 20px; } .chart-container h3 { margin-bottom: 20px; color: #333; font-size: 16px; }
-        /* ИЗМЕНЕНИЕ: Стили для простой гистограммы */
-        .chart { width: 100%; min-height: 250px; background: #f8f9fa; border-radius: 8px; display: flex; flex-direction: column; padding: 20px; color: #999; font-size: 14px; overflow-x: auto; }
-        .chart-bars { display: flex; align-items: flex-end; /* Столбцы растут снизу */ height: 180px; /* Фиксированная высота для столбцов */ border-bottom: 1px solid #ddd; margin-bottom: 10px; gap: 5px; /* Пространство между столбцами */ }
-        .chart-bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 40px; /* Минимальная ширина столбца */ }
-        .chart .bar { width: 80%; /* Ширина столбца */ background-color: var(--chart-bar-color); border-radius: 4px 4px 0 0; transition: height 0.3s ease; }
-        .chart .value { font-size: 10px; color: var(--chart-label-color); margin-top: 3px; font-weight: bold; white-space: nowrap; }
-        .chart .label { font-size: 10px; color: var(--chart-label-color); margin-top: 5px; white-space: nowrap; transform: rotate(-45deg); /* Поворот для длинных названий */ transform-origin: top right; }
-        
+        .chart { width: 100%; min-height: 250px; background: #f8f9fa; border-radius: 8px; display: flex; flex-direction: column; padding: 20px; color: #999; font-size: 14px; overflow-x: auto; } .chart-bars { display: flex; align-items: flex-end; height: 180px; border-bottom: 1px solid #ddd; margin-bottom: 10px; gap: 5px; } .chart-bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 40px; } .chart .bar { width: 80%; background-color: var(--chart-bar-color); border-radius: 4px 4px 0 0; transition: height 0.3s ease; } .chart .value { font-size: 10px; color: var(--chart-label-color); margin-top: 3px; font-weight: bold; white-space: nowrap; } .chart .label { font-size: 10px; color: var(--chart-label-color); margin-top: 5px; white-space: nowrap; transform: rotate(-45deg); transform-origin: top right; }
         .balance-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; } .balance-item { background: white; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; } .balance-item-info h4 { font-size: 16px; color: #333; margin-bottom: 5px; } .balance-item-info p { font-size: 12px; color: #999; } .balance-item-value { font-size: 24px; font-weight: 700; text-align: right; } .balance-item-value.positive { color: #11998e; } .balance-item-value.negative { color: #eb3349; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; } .modal.active { display: flex; align-items: center; justify-content: center; } .modal-content { background-color: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); animation: slideIn 0.3s; } .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e9ecef; } .modal-header h2 { font-size: 20px; color: #333; } .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; } .modal-close:hover { color: #333; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .alert { padding: 15px; margin-bottom: 20px; border-radius: 6px; display: none; animation: slideIn 0.3s; } .alert.active { display: block; } .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; } .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; } .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; } .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         .loading { text-align: center; padding: 40px; color: #999; } .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .empty-state { text-align: center; padding: 60px 20px; color: #999; } .empty-state-icon { font-size: 64px; margin-bottom: 20px; } .empty-state-text { font-size: 16px; margin-bottom: 10px; }
-        
-        /* RESPONSIVE */
         @media (max-width: 768px) { .filters { grid-template-columns: 1fr; } .modal-content { width: 95%; } .balance-list { grid-template-columns: 1fr; } }
-        
-        /* ACTION BUTTONS */
         .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; } .action-card { flex: 1; min-width: 150px; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; } .action-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); } .action-card-icon { font-size: 32px; margin-bottom: 10px; } .action-card-title { font-weight: 600; font-size: 14px; } .action-card.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; } .action-card.success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; } .action-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
-        
     </style>
 </head>
 <body class=""> 
-
     <div class="header"> <h1 id="headerTitle">Загрузка...</h1> </div>
     <div class="sidebar" id="sidebar"> <div class="sidebar-header"> <div class="user-info"> <span id="userRole">Роль: Загрузка...</span> </div> <button class="theme-toggle" onclick="toggleTheme()">🌙 Темная</button> </div> <div class="sidebar-nav"> <button class="nav-tab active" id="nav-dashboard" onclick="switchTab('dashboard')"><span class="icon">🏠</span> <span>Главная</span></button> <button class="nav-tab" id="nav-operations" onclick="switchTab('operations')"><span class="icon">💳</span> <span>Операции</span></button> <button class="nav-tab" id="nav-received" onclick="switchTab('received')" style="display: none;"><span class="icon">💰</span> <span>Получено</span></button> <button class="nav-tab" id="nav-journal" onclick="switchTab('journal')"><span class="icon">📄</span> <span>Журнал</span></button> <button class="nav-tab" id="nav-transfers" onclick="switchTab('transfers')" style="display: none;"><span class="icon">➡️</span> <span>Входящие</span></button> <button class="nav-tab" id="nav-balances" onclick="switchTab('balances')"><span class="icon">🏦</span> <span>Балансы</span></button> <button class="nav-tab" id="nav-analytics" onclick="switchTab('analytics')"><span class="icon">📈</span> <span>Аналитика</span></button> <button class="nav-tab" id="nav-approvals" onclick="switchTab('approvals')"><span class="icon">✅</span> <span>Подтверждения</span></button> </div> </div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <div class="content-wrapper" id="contentWrapper"> <div class="container"> <div id="alertContainer" style="padding: 20px 20px 0;"> <div id="successAlert" class="alert alert-success"></div> <div id="errorAlert" class="alert alert-error"></div> <div id="warningAlert" class="alert alert-warning"></div> <div id="infoAlert" class="alert alert-info"></div> </div> 
         <div id="dashboard" class="content active"> 
-            <div class="cards-grid"> 
-                <div class="card"> <h3>Мои расходы</h3> <div class="value" id="totalExpenses">0 ₽</div> </div> 
-                <div class="card"> <h3>Мне выдано</h3> <div class="value" id="totalIssued">0 ₽</div> </div> 
-                <div class="card"> <h3>Мои запросы</h3> <div class="value" id="pendingRequests">0</div> </div> 
-                <div class="card positive"> <h3>Мой баланс</h3> <div class="value" id="totalBalance">0 ₽</div> </div> 
-                <div class="card info" id="responsibleBalanceCard" style="display: none;"> <h3>Баланс Ответств.</h3> <div class="value" id="responsibleBalance">0 ₽</div> </div> 
-            </div> 
+            <div class="cards-grid"> <div class="card"> <h3>Мои расходы</h3> <div class="value" id="totalExpenses">0 ₽</div> </div> <div class="card"> <h3>Мне выдано</h3> <div class="value" id="totalIssued">0 ₽</div> </div> <div class="card"> <h3>Мои запросы</h3> <div class="value" id="pendingRequests">0</div> </div> <div class="card positive"> <h3>Мой баланс</h3> <div class="value" id="totalBalance">0 ₽</div> </div> <div class="card info" id="responsibleBalanceCard" style="display: none;"> <h3>Баланс Ответств.</h3> <div class="value" id="responsibleBalance">0 ₽</div> </div> </div> 
             <div class="action-buttons"> <div class="action-card primary" onclick="openModal('requestFundsModal')"> <div class="action-card-icon">📥</div> <div class="action-card-title">Запросить средства</div> </div> <div class="action-card success" onclick="openModal('recordExpenseModal')"> <div class="action-card-icon">💸</div> <div class="action-card-title">Совершить расход</div> </div> <div class="action-card warning" onclick="openModal('transferFundsModal')"> <div class="action-card-icon">↔️</div> <div class="action-card-title">Передать средства</div> </div> </div> 
             <div class="chart-container"> <h3>📊 Расходы по категориям (30 дней)</h3> <div class="chart" id="categoryChart"><div class="loading"><div class="spinner"></div></div></div> </div> 
             <div class="chart-container"> <h3>📈 Тренд расходов (30 дней)</h3> <div class="chart" id="trendChart"><div class="loading"><div class="spinner"></div></div></div> </div> 
@@ -135,7 +124,7 @@
         // API "МОСТ" 
         // ============================================================================
         const API_URL = 'https://script.google.com/macros/s/AKfycbxztQgwaMKfXVSjubNKK90IYKtbye7N3S-WtMAwn_N7E6PONbAOAtwPUlglmMA0YKjLWQ/exec'; 
-        async function callApi(action, payload = {}) { /* ... Полный код функции callApi ... */ console.log(`🚀 API Call: ${action}`, payload); try { const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload }) }); const responseText = await response.text(); console.log(`📬 API Response (${action}): ${response.status} ${response.statusText}`, responseText); if (!response.ok) { throw new Error(`Network error: ${response.status} ${response.statusText}. Response: ${responseText}`); } let result; try { result = JSON.parse(responseText); } catch (jsonError) { console.error('JSON Parse Error:', jsonError); throw new Error(`Failed to parse server response: ${responseText}`); } if (result.success === false && result.error) { throw new Error(result.error); } console.log(`✅ API Success (${action}):`, result); return result; } catch (error) { console.error(`❌ API Error (${action}):`, error); showAlert(`Критическая ошибка API (${action}): ${error.message}`, 'error'); throw error; } }
+        async function callApi(action, payload = {}) { /* ... Код функции callApi ... */ console.log(`🚀 API Call: ${action}`, payload); try { const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload }) }); const responseText = await response.text(); console.log(`📬 API Response (${action}): ${response.status} ${response.statusText}`, responseText); if (!response.ok) { throw new Error(`Network error: ${response.status} ${response.statusText}. Response: ${responseText}`); } let result; try { result = JSON.parse(responseText); } catch (jsonError) { console.error('JSON Parse Error:', jsonError); throw new Error(`Failed to parse server response: ${responseText}`); } if (result.success === false && result.error) { throw new Error(result.error); } console.log(`✅ API Success (${action}):`, result); return result; } catch (error) { console.error(`❌ API Error (${action}):`, error); showAlert(`Критическая ошибка API (${action}): ${error.message}`, 'error'); throw error; } }
         
         // ============================================================================
         // КОНФИГУРАЦИЯ
@@ -165,21 +154,8 @@
         // DASHBOARD (ВКЛЮЧАЯ КАРТОЧКИ И ГРАФИКИ)
         // ============================================================================
         function updateDashboard() { try { const log = allData.log || [], balances = allData.balances || []; console.log('📊 Updating Dashboard for:', currentUserId, currentUserRole); let exp = 0, iss = 0, req = 0, bal = 0, respBal = 0, respId = null; const balRec = balances.find(b => Array.isArray(b) && String(b[0]).trim() === currentUserId); if (balRec) { bal = parseFloat(balRec[2]) || 0; } if (currentUserRole === 'Директор') { const respRec = allData.admin.find(a => Array.isArray(a) && a[1] === 'Ответственный'); if (respRec) { respId = String(respRec[0]).trim(); const rBalRec = balances.find(b => Array.isArray(b) && String(b[0]).trim() === respId); if (rBalRec) { respBal = parseFloat(rBalRec[2]) || 0; } } } const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); log.forEach(entry => { if (!Array.isArray(entry) || entry.length < 12) return; const type = String(entry[2]||''), status = String(entry[3]||''), amount = parseFloat(entry[4])||0, fromId = String(entry[5]||''), toId = String(entry[6]||''), date = new Date(entry[0]); if ((type === 'Расход' || type === 'Возврат') && fromId === currentUserId) { exp += Math.abs(amount); } if (currentUserRole === 'Директор' || currentUserRole === 'Бухгалтер') { if (type === 'Выдача' && status === 'Подтверждено') { iss += amount; } } else { if (((type === 'Выдача') || (type === 'Передача' && status === 'Подтверждено')) && toId === currentUserId) { iss += amount; } } if (type === 'Запрос' && status === 'Ожидает' && fromId === currentUserId) { req++; } }); document.getElementById('totalExpenses').textContent = formatCurrency(exp); document.getElementById('totalIssued').textContent = formatCurrency(iss); document.getElementById('pendingRequests').textContent = req; document.getElementById('totalBalance').textContent = formatCurrency(bal); const respCard = document.getElementById('responsibleBalanceCard'), respVal = document.getElementById('responsibleBalance'); if (respCard && respVal) { if (currentUserRole === 'Директор' && respId) { respVal.textContent = formatCurrency(respBal); respCard.style.display = 'block'; } else { respCard.style.display = 'none'; } } displayDashboardCharts(); console.log('✅ Dashboard updated.'); } catch(e) { console.error("❌ Error updating Dashboard:", e); showAlert("Ошибка главной: " + e.message, 'error'); } }
+        function displayDashboardCharts() { const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); thirtyDaysAgo.setHours(0,0,0,0); const expensesLast30Days = allData.log.filter(entry => Array.isArray(entry) && entry.length > 8 && entry[2] === 'Расход' && new Date(entry[0]) >= thirtyDaysAgo); const categoryData = aggregateDataByCategory(expensesLast30Days); renderBarChart('categoryChart', categoryData); const trendData = aggregateDataByPeriod(expensesLast30Days, 'daily'); renderBarChart('trendChart', trendData); }
         
-        // НОВОЕ: Функция для отрисовки графиков на Dashboard
-        function displayDashboardCharts() {
-            const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); thirtyDaysAgo.setHours(0,0,0,0);
-            const expensesLast30Days = allData.log.filter(entry => Array.isArray(entry) && entry.length > 8 && entry[2] === 'Расход' && new Date(entry[0]) >= thirtyDaysAgo);
-
-            // 1. График по категориям
-            const categoryData = aggregateDataByCategory(expensesLast30Days);
-            renderBarChart('categoryChart', categoryData);
-
-            // 2. График тренда (по дням)
-            const trendData = aggregateDataByPeriod(expensesLast30Days, 'daily');
-             renderBarChart('trendChart', trendData);
-        }
-
         // ============================================================================
         // ОПЕРАЦИИ - ОТПРАВКА ДАННЫХ
         // ============================================================================
@@ -193,7 +169,7 @@
         function loadJournal() { try { const l=allData.log||[],t=document.getElementById('journalBody');console.log('📰 Журнал:', l.length); if(l.length===0){t.innerHTML='<tr><td colspan="9" class="empty-state">Нет данных</td></tr>';return;} let h=''; for(let i=l.length-1;i>=0;i--){const e=l[i];if(!Array.isArray(e)||e.length<12){console.warn("Skip:",e);continue;} try{const d=e[0]?new Date(e[0]).toLocaleDateString('ru-RU'):'N/A',id=e[1]||'N/A',tp=e[2]||'?',st=e[3]||'?',am=e[4],fr=e[5]||'',to=e[6]||'',cat=e[8]||'',sub=e[9]||'',com=e[11]||'',cl=st==='Подтверждено'?'status-approved':(st==='Ожидает'?'status-pending':'status-rejected'),fn=getNameById(fr)||fr,tn=getNameById(to)||to; h+=`<tr><td>${d}</td><td><code>${id}</code></td><td>${tp}</td><td><span class="status-badge ${cl}">${st}</span></td><td>${formatCurrency(am)}</td><td>${fn}</td><td>${tn}</td><td>${cat}${sub?' / '+sub:''}</td><td>${com}</td></tr>`;}catch(er){console.error("Row err:",er,e);}} t.innerHTML=h; console.log('✅ Журнал OK.');}catch(e){console.error("❌ Журнал err:",e);showAlert("Ошибка журнала: "+e.message,'error');}}
         function applyFilters() { try { const l=allData.log||[],dF=document.getElementById('filterDateFrom').value,dT=document.getElementById('filterDateTo').value,tp=document.getElementById('filterType').value,st=document.getElementById('filterStatus').value,df=dF?new Date(dF+'T00:00:00'):null,dt=dT?new Date(dT+'T23:59:59'):null; console.log('🔍 Фильтры:',{df,dt,tp,st}); const t=document.getElementById('journalBody'); let h='',c=0; for(let i=l.length-1;i>=0;i--){const e=l[i];if(!Array.isArray(e)||e.length<12)continue; try{const ed=e[0]?new Date(e[0]):null;if(!ed)continue; const et=String(e[2]||''),es=String(e[3]||''); let m=true; if(df&&ed<df)m=false; if(dt&&ed>dt)m=false; if(tp&&et!==tp)m=false; if(st&&es!==st)m=false; if(m){c++; const ds=ed.toLocaleDateString('ru-RU'),id=e[1]||'N/A',am=e[4],fr=e[5]||'',to=e[6]||'',cat=e[8]||'',sub=e[9]||'',com=e[11]||'',cl=es==='Подтверждено'?'status-approved':(es==='Ожидает'?'status-pending':'status-rejected'),fn=getNameById(fr)||fr,tn=getNameById(to)||to; h+=`<tr><td>${ds}</td><td><code>${id}</code></td><td>${et}</td><td><span class="status-badge ${cl}">${es}</span></td><td>${formatCurrency(am)}</td><td>${fn}</td><td>${tn}</td><td>${cat}${sub?' / '+sub:''}</td><td>${com}</td></tr>`;}}catch(er){console.error("Filter row err:",er,e);}} t.innerHTML=h||`<tr><td colspan="9" class="empty-state">Нет данных (${c})</td></tr>`; console.log(`✅ Фильтры: ${c}.`);}catch(e){console.error("❌ Фильтры err:",e);showAlert("Ошибка фильтров: "+e.message,'error');}}
         function resetFilters() { document.getElementById('filterDateFrom').value=''; document.getElementById('filterDateTo').value=''; document.getElementById('filterType').value=''; document.getElementById('filterStatus').value=''; loadJournal(); console.log('Фильтры сброшены.'); }
-        function exportToCSV() { /* ... */ }
+        function exportToCSV() { /* ... Код экспорта ... */ }
         
         // ============================================================================
         // БАЛАНСЫ
@@ -215,161 +191,11 @@
         // ============================================================================
         // АНАЛИТИКА (ВКЛЮЧАЯ ГРАФИКИ)
         // ============================================================================
-        function loadAnalytics() { 
-            const period = document.getElementById('analyticsPeriod').value;
-            const monthsBack = parseInt(document.getElementById('analyticsMonths').value);
-            const employeeIdFromFilter = document.getElementById('analyticsEmployee').value;
-            const analyticsEmployeeSelect = document.getElementById('analyticsEmployee');
-
-            let finalEmployeeId = employeeIdFromFilter;
-
-            if (currentUserRole === 'Сотрудник') {
-                finalEmployeeId = currentUserId; 
-                if (analyticsEmployeeSelect) { analyticsEmployeeSelect.value = currentUserId; analyticsEmployeeSelect.disabled = true; }
-            } else {
-                 if (analyticsEmployeeSelect) { analyticsEmployeeSelect.disabled = false; }
-            }
-            
-            console.log('📈 Загрузка аналитики:', { period, monthsBack, employeeId: finalEmployeeId });
-
-            // Фильтрация данных
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setMonth(startDate.getMonth() - monthsBack);
-            startDate.setDate(1); // Начинаем с 1го числа N месяцев назад
-            startDate.setHours(0,0,0,0);
-            
-            const filteredLogs = allData.log.filter(entry => {
-                if (!Array.isArray(entry) || entry.length < 12) return false;
-                const entryDate = new Date(entry[0]);
-                const type = String(entry[2] || '');
-                const fromId = String(entry[5] || '');
-                
-                // Фильтр по дате
-                if (!(entryDate >= startDate && entryDate <= endDate)) return false;
-                // Только расходы
-                if (type !== 'Расход') return false;
-                // Фильтр по сотруднику (если выбран)
-                if (finalEmployeeId && fromId !== finalEmployeeId) return false;
-                
-                return true;
-            });
-
-            console.log(`📊 Найдено ${filteredLogs.length} записей для аналитики.`);
-
-            // Агрегация и рендеринг
-            const categoryData = aggregateDataByCategory(filteredLogs);
-            renderBarChart('analyticsCategoryChart', categoryData);
-
-            const employeeData = aggregateDataByEmployee(filteredLogs);
-            renderBarChart('analyticsEmployeeChart', employeeData);
-
-            const trendData = aggregateDataByPeriod(filteredLogs, period); // 'daily', 'weekly', 'monthly'
-            renderBarChart('analyticsTrendChart', trendData);
-        }
-
-        // НОВЫЕ ХЕЛПЕРЫ ДЛЯ АГРЕГАЦИИ
-        function aggregateDataByCategory(logs) {
-            const aggregated = {};
-            logs.forEach(entry => {
-                const category = String(entry[8] || 'Без категории').trim();
-                const amount = parseFloat(entry[4]) || 0;
-                if (amount > 0) { // Считаем только положительные расходы
-                    aggregated[category] = (aggregated[category] || 0) + amount;
-                }
-            });
-            return Object.entries(aggregated).map(([label, value]) => ({ label, value })).sort((a,b) => b.value - a.value); // Сортировка по убыванию
-        }
-
-        function aggregateDataByEmployee(logs) {
-            const aggregated = {};
-            logs.forEach(entry => {
-                const employeeId = String(entry[5] || 'Неизвестно').trim();
-                const amount = parseFloat(entry[4]) || 0;
-                 if (amount > 0) {
-                     const name = getNameById(employeeId); // Получаем имя
-                     aggregated[name] = (aggregated[name] || 0) + amount;
-                 }
-            });
-             return Object.entries(aggregated).map(([label, value]) => ({ label, value })).sort((a,b) => b.value - a.value);
-        }
-
-        function aggregateDataByPeriod(logs, periodType) {
-            const aggregated = {};
-            logs.forEach(entry => {
-                const date = new Date(entry[0]);
-                const amount = parseFloat(entry[4]) || 0;
-                if (amount <= 0) return; // Пропускаем возвраты и т.п.
-
-                let key = '';
-                if (periodType === 'daily') {
-                    key = date.toLocaleDateString('ru-RU');
-                } else if (periodType === 'weekly') {
-                     const startOfWeek = new Date(date);
-                     const dayOfWeek = startOfWeek.getDay(); // 0 = вс, 1 = пн, ...
-                     const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Коррекция для начала недели с ПН
-                     startOfWeek.setDate(diff);
-                     key = startOfWeek.toLocaleDateString('ru-RU'); // Ключ - дата понедельника
-                } else if (periodType === 'monthly') {
-                    key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // ГГГГ-ММ
-                } else { // yearly
-                     key = String(date.getFullYear());
-                }
-                aggregated[key] = (aggregated[key] || 0) + amount;
-            });
-             // Сортируем ключи (даты/месяцы) для правильного порядка на графике
-             const sortedKeys = Object.keys(aggregated).sort((a, b) => {
-                 if (periodType === 'daily' || periodType === 'weekly') {
-                     // Преобразуем ДД.ММ.ГГГГ в ГГГГММДД для сортировки
-                     const dateA = a.split('.').reverse().join('');
-                     const dateB = b.split('.').reverse().join('');
-                     return dateA.localeCompare(dateB);
-                 }
-                 return a.localeCompare(b); // Для ГГГГ-ММ или ГГГГ
-             });
-             return sortedKeys.map(key => ({ label: key, value: aggregated[key] }));
-        }
-
-        // НОВАЯ ФУНКЦИЯ РЕНДЕРИНГА ГРАФИКА
-        function renderBarChart(containerId, data) {
-             const container = document.getElementById(containerId);
-             if (!container) return;
-
-             if (!data || data.length === 0) {
-                 container.innerHTML = '<div class="empty-state-text" style="padding: 20px;">Нет данных для отображения</div>';
-                 return;
-             }
-
-             // Находим максимальное значение для масштабирования
-             const maxValue = Math.max(...data.map(item => item.value));
-             if (maxValue <= 0) {
-                  container.innerHTML = '<div class="empty-state-text" style="padding: 20px;">Нет данных для отображения</div>';
-                  return;
-             }
-
-
-             let barsHtml = '<div class="chart-bars">';
-             data.forEach(item => {
-                 const barHeightPercent = (item.value / maxValue) * 100;
-                 // Обрезаем длинные метки
-                 const displayLabel = item.label.length > 10 ? item.label.substring(0, 7) + '...' : item.label;
-                 barsHtml += `
-                     <div class="chart-bar-item" title="${item.label}: ${formatCurrency(item.value)}">
-                         <div class="value">${formatCurrency(item.value)}</div>
-                         <div class="bar" style="height: ${barHeightPercent}%;"></div>
-                         <div class="label">${displayLabel}</div>
-                     </div>
-                 `;
-             });
-             barsHtml += '</div>';
-             
-             container.innerHTML = barsHtml;
-         }
-
-        // Старые заглушки удалены
-        // function displayCategoryChart(data) { ... }
-        // function displayEmployeeChart(data) { ... }
-        // function displayTrendChart(data) { ... }
+        function loadAnalytics() { const period=document.getElementById('analyticsPeriod').value, monthsBack=parseInt(document.getElementById('analyticsMonths').value), employeeIdFromFilter=document.getElementById('analyticsEmployee').value, analyticsEmployeeSelect=document.getElementById('analyticsEmployee'); let finalEmployeeId=employeeIdFromFilter; if(currentUserRole==='Сотрудник'){finalEmployeeId=currentUserId; if(analyticsEmployeeSelect){analyticsEmployeeSelect.value=currentUserId; analyticsEmployeeSelect.disabled=true;}}else{if(analyticsEmployeeSelect){analyticsEmployeeSelect.disabled=false;}} console.log('📈 Аналитика:', {period, monthsBack, employeeId:finalEmployeeId}); const endDate=new Date(), startDate=new Date(); startDate.setMonth(startDate.getMonth()-monthsBack); startDate.setDate(1); startDate.setHours(0,0,0,0); const filteredLogs=allData.log.filter(e=>{if(!Array.isArray(e)||e.length<12)return false; const d=new Date(e[0]), t=String(e[2]||''), f=String(e[5]||''); if(!(d>=startDate&&d<=endDate))return false; if(t!=='Расход')return false; if(finalEmployeeId&&f!==finalEmployeeId)return false; return true;}); console.log(`📊 Записей: ${filteredLogs.length}`); const categoryData=aggregateDataByCategory(filteredLogs); renderBarChart('analyticsCategoryChart', categoryData); const employeeData=aggregateDataByEmployee(filteredLogs); renderBarChart('analyticsEmployeeChart', employeeData); const trendData=aggregateDataByPeriod(filteredLogs, period); renderBarChart('analyticsTrendChart', trendData); }
+        function aggregateDataByCategory(logs) { const agg={}; logs.forEach(e=>{const c=String(e[8]||'Без кат.').trim(), a=parseFloat(e[4])||0; if(a>0){agg[c]=(agg[c]||0)+a;}}); return Object.entries(agg).map(([label, value])=>({label, value})).sort((a,b)=>b.value-a.value); }
+        function aggregateDataByEmployee(logs) { const agg={}; logs.forEach(e=>{const id=String(e[5]||'?').trim(), a=parseFloat(e[4])||0; if(a>0){const n=getNameById(id); agg[n]=(agg[n]||0)+a;}}); return Object.entries(agg).map(([label, value])=>({label, value})).sort((a,b)=>b.value-a.value); }
+        function aggregateDataByPeriod(logs, periodType) { const agg={}; logs.forEach(e=>{const d=new Date(e[0]), a=parseFloat(e[4])||0; if(a<=0)return; let k=''; if(periodType==='daily'){k=d.toLocaleDateString('ru-RU');}else if(periodType==='weekly'){const s=new Date(d), day=s.getDay(), diff=s.getDate()-day+(day===0?-6:1); s.setDate(diff); k=s.toLocaleDateString('ru-RU');}else if(periodType==='monthly'){k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}else{k=String(d.getFullYear());} agg[k]=(agg[k]||0)+a;}); const keys=Object.keys(agg).sort((a,b)=>{if(periodType==='daily'||periodType==='weekly'){const dA=a.split('.').reverse().join(''), dB=b.split('.').reverse().join(''); return dA.localeCompare(dB);} return a.localeCompare(b);}); return keys.map(key=>({label:key, value:agg[key]})); }
+        function renderBarChart(containerId, data) { const c=document.getElementById(containerId); if(!c)return; if(!data||data.length===0){c.innerHTML='<div class="empty-state-text" style="padding:20px;">Нет данных</div>';return;} const maxV=Math.max(...data.map(i=>i.value)); if(maxV<=0){c.innerHTML='<div class="empty-state-text" style="padding:20px;">Нет данных</div>';return;} let h='<div class="chart-bars">'; data.forEach(i=>{const hp=(i.value/maxV)*100, dl=i.label.length>10?i.label.substring(0,7)+'...':i.label; h+=`<div class="chart-bar-item" title="${i.label}: ${formatCurrency(i.value)}"><div class="value">${formatCurrency(i.value)}</div><div class="bar" style="height:${hp}%;"></div><div class="label">${dl}</div></div>`;}); h+='</div>'; c.innerHTML=h; }
         
         // ============================================================================
         // ПОДТВЕРЖДЕНИЯ
